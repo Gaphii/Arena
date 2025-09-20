@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arena - Ödev Takip Uygulaması</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <div class="app-title">
+            <div class="app-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <h1>Arena</h1>
+        </div>
+        <p>Haftalık Ödev Takip Sistemi</p>
+        
+        <div class="user-info">
+            <div class="profile">
+                <div class="profile-img">AÖ</div>
+                <div class="user-details">
+                    <div class="user-name">Ahmet Yılmaz</div>
+                    <div class="user-class">9-A Sınıfı</div>
+                </div>
+            </div>
+            <button class="theme-toggle" id="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- Ana Sayfa -->
+        <div class="page active" id="page-home">
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-title">Toplam Ödev</div>
+                    <div class="stat-value" id="total-homework">0</div>
+                    <div class="stat-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Tamamlanan</div>
+                    <div class="stat-value" id="completed-homework">0</div>
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="week-navigation">
+                <button id="prev-week"><i class="fas fa-chevron-left"></i></button>
+                <div class="current-week" id="current-week">30 Eylül - 6 Ekim 2023</div>
+                <button id="next-week"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            
+            <div class="days-container" id="days-container">
+                <!-- Days will be populated by JavaScript -->
+            </div>
+            
+            <div class="homeworks-container">
+                <div class="homeworks-header">
+                    <h2 id="selected-day-title">Pazartesi Ödevleri</h2>
+                    <button class="filter-btn" id="filter-btn">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                </div>
+                
+                <div id="homeworks-list">
+                    <!-- Homeworks will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Takvim Sayfası -->
+        <div class="page" id="page-calendar">
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <h2>Ekim 2023</h2>
+                    <div>
+                        <button class="button outline"><i class="fas fa-chevron-left"></i></button>
+                        <button class="button outline"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+                
+                <div class="calendar-grid" id="calendar-grid">
+                    <!-- Calendar will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="homeworks-container">
+                <div class="homeworks-header">
+                    <h2>Seçilen Günün Ödevleri</h2>
+                </div>
+                
+                <div id="calendar-homeworks">
+                    <!-- Homeworks for selected day will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dersler Sayfası -->
+        <div class="page" id="page-subjects">
+            <div class="subjects-container" id="subjects-container">
+                <!-- Subjects will be populated by JavaScript -->
+            </div>
+            
+            <div class="homeworks-container">
+                <div class="homeworks-header">
+                    <h2 id="selected-subject-title">Matematik Ödevleri</h2>
+                </div>
+                
+                <div id="subject-homeworks">
+                    <!-- Homeworks for selected subject will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- İstatistik Sayfası -->
+        <div class="page" id="page-statistics">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h2>Haftalık Ödev Dağılımı</h2>
+                </div>
+                
+                <div class="chart" id="homework-chart">
+                    <!-- Chart will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-large">
+                    <div class="stat-large-title">Ortalama Tamamlama Oranı</div>
+                    <div class="stat-large-value">%72</div>
+                    <div class="progress-bar">
+                        <!-- Progress bar will be added -->
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-title">En Çok Ödev</div>
+                    <div class="stat-value">Matematik</div>
+                    <div class="stat-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-title">En Az Ödev</div>
+                    <div class="stat-value">Tarih</div>
+                    <div class="stat-icon">
+                        <i class="fas fa-monument"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Ayarlar Sayfası -->
+        <div class="page" id="page-settings">
+            <div class="settings-container">
+                <div class="settings-header">
+                    <h2>Uygulama Ayarları</h2>
+                </div>
+                
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <div class="settings-title">Karanlık Mod</div>
+                        <div class="settings-desc">Arayüzü koyu temaya geçir</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="dark-mode-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <div class="settings-title">Bildirimler</div>
+                        <div class="settings-desc">Ödev hatırlatıcılarını aç</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="notifications-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <div class="settings-title">Otomatik Yedekleme</div>
+                        <div class="settings-desc">Verilerinizi buluta yedekle</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="backup-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="settings-container">
+                <div class="settings-header">
+                    <h2>Hesap Ayarları</h2>
+                </div>
+                
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <div class="settings-title">Profil Bilgileri</div>
+                        <div class="settings-desc">İsim, sınıf ve diğer bilgiler</div>
+                    </div>
+                    <button class="button outline">Düzenle</button>
+                </div>
+                
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <div class="settings-title">Şifre Değiştir</div>
+                        <div class="settings-desc">Hesap şifrenizi güncelleyin</div>
+                    </div>
+                    <button class="button outline">Değiştir</button>
+                </div>
+            </div>
+            
+            <div class="settings-container">
+                <div class="settings-header">
+                    <h2>Veri Yönetimi</h2>
+                </div>
+                
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <div class="settings-title">Verileri Dışa Aktar</div>
+                        <div class="settings-desc">Ödevlerinizi yedekleyin</div>
+                    </div>
+                    <button class="button outline"><i class="fas fa-download"></i> Aktar</button>
+                </div>
+                
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <div class="settings-title">Tüm Verileri Sil</div>
+                        <div class="settings-desc">Uygulamayı sıfırlayın</div>
+                    </div>
+                    <button class="button outline danger"><i class="fas fa-trash"></i> Sil</button>
+                </div>
+            </div>
+            
+            <div class="settings-container">
+                <div class="settings-header">
+                    <h2>Hakkında</h2>
+                </div>
+                
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <div class="settings-title">Uygulama Versiyonu</div>
+                        <div class="settings-desc">Arena v1.2.0</div>
+                    </div>
+                </div>
+                
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <div class="settings-title">Geliştirici</div>
+                        <div class="settings-desc">Arena Eğitim Teknolojileri</div>
+                    </div>
+                </div>
+                
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <div class="settings-title">Lisans</div>
+                        <div class="settings-desc">Telif Hakkı © 2023</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <button class="add-button" id="add-button">
+        <i class="fas fa-plus"></i>
+    </button>
+    
+    <div class="bottom-nav">
+        <div class="nav-item active" data-page="page-home">
+            <i class="fas fa-home"></i>
+            <span>Ana Sayfa</span>
+        </div>
+        <div class="nav-item" data-page="page-calendar">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Takvim</span>
+        </div>
+        <div class="nav-item" data-page="page-subjects">
+            <i class="fas fa-book"></i>
+            <span>Dersler</span>
+        </div>
+        <div class="nav-item" data-page="page-statistics">
+            <i class="fas fa-chart-pie"></i>
+            <span>İstatistik</span>
+        </div>
+        <div class="nav-item" data-page="page-settings">
+            <i class="fas fa-cog"></i>
+            <span>Ayarlar</span>
+        </div>
+    </div>
+    
+    <!-- Add Homework Modal -->
+    <div class="modal" id="add-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Yeni Ödev Ekle</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            
+            <div class="form-group">
+                <label for="homework-title">Ödev Başlığı</label>
+                <input type="text" id="homework-title" placeholder="Ödev adını yazın">
+            </div>
+            
+            <div class="form-group">
+                <label for="homework-subject">Ders</label>
+                <select id="homework-subject">
+                    <option value="math">Matematik</option>
+                    <option value="science">Fen Bilimleri</option>
+                    <option value="turkish">Türkçe</option>
+                    <option value="history">Tarih</option>
+                    <option value="english">İngilizce</option>
+                    <option value="physics">Fizik</option>
+                    <option value="chemistry">Kimya</option>
+                    <option value="biology">Biyoloji</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="homework-date">Teslim Tarihi</label>
+                <input type="date" id="homework-date">
+            </div>
+            
+            <div class="form-group">
+                <label for="homework-time">Teslim Saati</label>
+                <input type="time" id="homework-time">
+            </div>
+            
+            <div class="form-group">
+                <label for="homework-priority">Öncelik</label>
+                <select id="homework-priority">
+                    <option value="normal">Normal</option>
+                    <option value="high">Yüksek</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="homework-desc">Açıklama (opsiyonel)</label>
+                <textarea id="homework-desc" placeholder="Ödev ile ilgili detaylar"></textarea>
+            </div>
+            
+            <button class="submit-btn" id="save-homework">Ödevi Kaydet</button>
+        </div>
+    </div>
+
+    <!-- Edit Homework Modal -->
+    <div class="modal" id="edit-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Ödevi Düzenle</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            
+            <input type="hidden" id="edit-id">
+            
+            <div class="form-group">
+                <label for="edit-title">Ödev Başlığı</label>
+                <input type="text" id="edit-title" placeholder="Ödev adını yazın">
+            </div>
+            
+            <div class="form-group">
+                <label for="edit-subject">Ders</label>
+                <select id="edit-subject">
+                    <option value="math">Matematik</option>
+                    <option value="science">Fen Bilimleri</option>
+                    <option value="turkish">Türkçe</option>
+                    <option value="history">Tarih</option>
+                    <option value="english">İngilizce</option>
+                    <option value="physics">Fizik</option>
+                    <option value="chemistry">Kimya</option>
+                    <option value="biology">Biyoloji</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="edit-date">Teslim Tarihi</label>
+                <input type="date" id="edit-date">
+            </div>
+            
+            <div class="form-group">
+                <label for="edit-time">Teslim Saati</label>
+                <input type="time" id="edit-time">
+            </div>
+            
+            <div class="form-group">
+                <label for="edit-priority">Öncelik</label>
+                <select id="edit-priority">
+                    <option value="normal">Normal</option>
+                    <option value="high">Yüksek</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="edit-desc">Açıklama (opsiyonel)</label>
+                <textarea id="edit-desc" placeholder="Ödev ile ilgili detaylar"></textarea>
+            </div>
+            
+            <button class="submit-btn" id="update-homework">Değişiklikleri Kaydet</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
