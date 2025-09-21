@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arena - Ödev Takip Uygulaması</title>
+    <title>Arena - Öğretmen ve Öğrenci Ödev Takip Sistemi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -51,7 +51,117 @@
             transition: var(--transition);
         }
         
-        .container {
+        /* Giriş Ekranı */
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        
+        .login-box {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .app-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .app-title h1 {
+            font-size: 1.8rem;
+            margin: 0;
+            font-weight: 700;
+        }
+        
+        .app-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .user-type-selector {
+            display: flex;
+            margin-bottom: 20px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            background: var(--light);
+        }
+        
+        .user-type-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .user-type-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .login-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        /* Ana Uygulama */
+        .app-container {
+            display: none;
             max-width: 100%;
             padding: 15px;
             padding-bottom: 90px;
@@ -66,35 +176,6 @@
             border-radius: 0 0 var(--border-radius) var(--border-radius);
             box-shadow: var(--shadow);
             position: relative;
-        }
-        
-        .app-title {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 5px;
-        }
-        
-        .app-title h1 {
-            font-size: 1.8rem;
-            margin: 0;
-            font-weight: 700;
-        }
-        
-        .app-icon {
-            width: 36px;
-            height: 36px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .header p {
-            opacity: 0.9;
-            font-size: 1rem;
         }
         
         .user-info {
@@ -113,7 +194,7 @@
             width: 42px;
             height: 42px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: rgba(255, 255, 255, 0.2);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -126,6 +207,7 @@
         .user-details {
             display: flex;
             flex-direction: column;
+            color: white;
         }
         
         .user-name {
@@ -133,12 +215,12 @@
             font-size: 1rem;
         }
         
-        .user-class {
+        .user-class, .user-type {
             font-size: 0.85rem;
             opacity: 0.9;
         }
         
-        .theme-toggle {
+        .logout-btn {
             background: rgba(255, 255, 255, 0.2);
             border: none;
             width: 42px;
@@ -323,26 +405,6 @@
             color: var(--text-primary);
         }
         
-        .filter-btn {
-            background: var(--background);
-            border: none;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            color: var(--text-secondary);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-        
-        .filter-btn:hover {
-            background: var(--primary);
-            color: white;
-        }
-        
         .homework-item {
             display: flex;
             align-items: center;
@@ -404,15 +466,15 @@
             gap: 4px;
         }
         
+        .homework-teacher {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
         .homework-actions {
             display: flex;
             gap: 12px;
-            opacity: 0;
-            transition: var(--transition);
-        }
-        
-        .homework-item:hover .homework-actions {
-            opacity: 1;
         }
         
         .homework-actions button {
@@ -435,8 +497,8 @@
             color: var(--primary);
         }
         
-        /* Takvim Sayfası Stilleri */
-        .calendar-container {
+        /* Öğretmen Paneli */
+        .teacher-panel {
             background: var(--card-bg);
             border-radius: var(--border-radius);
             padding: 20px;
@@ -444,309 +506,53 @@
             margin-bottom: 20px;
         }
         
-        .calendar-header {
+        .panel-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
         
-        .calendar-header h2 {
+        .panel-header h2 {
             font-size: 1.3rem;
             font-weight: 600;
         }
         
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-        }
-        
-        .calendar-day-header {
-            text-align: center;
-            font-weight: 600;
-            font-size: 0.9rem;
-            padding: 10px 0;
-            color: var(--text-secondary);
-        }
-        
-        .calendar-day {
-            aspect-ratio: 1/1;
+        .class-selector {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: var(--transition);
-            position: relative;
-        }
-        
-        .calendar-day:hover {
-            background: var(--background);
-        }
-        
-        .calendar-day.active {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-        }
-        
-        .calendar-day.today {
-            border: 2px solid var(--accent);
-        }
-        
-        .calendar-day .day-number {
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-        
-        .calendar-day .homework-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--primary);
-            position: absolute;
-            bottom: 5px;
-        }
-        
-        /* Dersler Sayfası Stilleri */
-        .subjects-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .subject-card {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: 20px;
-            box-shadow: var(--shadow);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-        
-        .subject-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-        }
-        
-        .subject-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-        }
-        
-        .subject-name {
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 1.1rem;
-        }
-        
-        .subject-count {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-        
-        /* İstatistik Sayfası Stilleri */
-        .chart-container {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: 20px;
-            box-shadow: var(--shadow);
-            margin-bottom: 20px;
-        }
-        
-        .chart-header {
-            margin-bottom: 20px;
-        }
-        
-        .chart-header h2 {
-            font-size: 1.3rem;
-            font-weight: 600;
-        }
-        
-        .chart {
-            height: 200px;
-            display: flex;
-            align-items: flex-end;
             gap: 10px;
-            padding: 0 10px;
+            margin-bottom: 20px;
         }
         
-        .chart-bar {
+        .class-selector select {
             flex: 1;
-            background: linear-gradient(to top, var(--primary), var(--secondary));
-            border-radius: 6px 6px 0 0;
-            position: relative;
-            min-width: 30px;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
         }
         
-        .chart-label {
-            position: absolute;
-            bottom: -25px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-        
-        .stat-large {
-            grid-column: span 2;
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: 20px;
-            box-shadow: var(--shadow);
-            text-align: center;
-        }
-        
-        .stat-large-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin: 10px 0;
-        }
-        
-        .stat-large-title {
-            font-size: 1rem;
-            color: var(--text-secondary);
-        }
-        
-        /* Ayarlar Sayfası Stilleri */
-        .settings-container {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: 20px;
-            box-shadow: var(--shadow);
-            margin-bottom: 20px;
-        }
-        
-        .settings-header {
-            margin-bottom: 20px;
-        }
-        
-        .settings-header h2 {
-            font-size: 1.3rem;
-            font-weight: 600;
-        }
-        
-        .settings-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 0;
-            border-bottom: 1px solid rgba(0,0,0,0.08);
-        }
-        
-        .settings-item:last-child {
-            border-bottom: none;
-        }
-        
-        .settings-info {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .settings-title {
-            font-weight: 500;
-            margin-bottom: 4px;
-        }
-        
-        .settings-desc {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-        
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 24px;
-        }
-        
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        
-        .slider {
-            position: absolute;
+        .add-class-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
             cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 24px;
         }
         
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        
-        input:checked + .slider {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-        }
-        
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-        
-        .button {
+        /* Öğrenci Not Ekleme */
+        .add-note-btn {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border: none;
             border-radius: 8px;
-            padding: 12px 20px;
-            font-size: 1rem;
-            font-weight: 500;
+            padding: 10px 15px;
             cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            justify-content: center;
             gap: 8px;
-        }
-        
-        .button:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-        
-        .button.outline {
-            background: transparent;
-            color: var(--primary);
-            border: 1px solid var(--primary);
-        }
-        
-        .button.danger {
-            background: var(--danger);
+            font-weight: 500;
         }
         
         .bottom-nav {
@@ -980,12 +786,8 @@
                 gap: 5px;
             }
             
-            .stats-container, .subjects-container, .stats-grid {
+            .stats-container {
                 grid-template-columns: 1fr;
-            }
-            
-            .stat-large {
-                grid-column: span 1;
             }
             
             .app-title h1 {
@@ -1016,454 +818,460 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="app-title">
-            <div class="app-icon">
-                <i class="fas fa-trophy"></i>
-            </div>
-            <h1>Arena</h1>
-        </div>
-        <p>Haftalık Ödev Takip Sistemi</p>
-        
-        <div class="user-info">
-            <div class="profile">
-                <div class="profile-img">AÖ</div>
-                <div class="user-details">
-                    <div class="user-name">Ahmet Yılmaz</div>
-                    <div class="user-class">9-A Sınıfı</div>
+    <!-- Giriş Ekranı -->
+    <div class="login-container" id="login-container">
+        <div class="login-box">
+            <div class="app-title">
+                <div class="app-icon">
+                    <i class="fas fa-trophy"></i>
                 </div>
+                <h1>Arena</h1>
             </div>
-            <button class="theme-toggle" id="theme-toggle">
-                <i class="fas fa-moon"></i>
-            </button>
+            <p>Öğretmen ve Öğrenci Ödev Takip Sistemi</p>
+            
+            <div class="user-type-selector">
+                <button class="user-type-btn active" data-type="student">Öğrenci</button>
+                <button class="user-type-btn" data-type="teacher">Öğretmen</button>
+            </div>
+            
+            <div class="form-group">
+                <label for="username">Kullanıcı Adı</label>
+                <input type="text" id="username" placeholder="Kullanıcı adınız">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Şifre</label>
+                <input type="password" id="password" placeholder="Şifreniz">
+            </div>
+            
+            <div class="form-group" id="class-group">
+                <label for="class">Sınıf</label>
+                <select id="class">
+                    <option value="9A">9-A</option>
+                    <option value="9B">9-B</option>
+                    <option value="10A">10-A</option>
+                    <option value="10B">10-B</option>
+                    <option value="11A">11-A</option>
+                    <option value="11B">11-B</option>
+                    <option value="12A">12-A</option>
+                    <option value="12B">12-B</option>
+                </select>
+            </div>
+            
+            <button class="login-btn" id="login-btn">Giriş Yap</button>
         </div>
     </div>
     
-    <div class="container">
-        <!-- Ana Sayfa -->
-        <div class="page active" id="page-home">
-            <div class="stats-container">
-                <div class="stat-card">
-                    <div class="stat-title">Toplam Ödev</div>
-                    <div class="stat-value" id="total-homework">0</div>
-                    <div class="stat-icon">
-                        <i class="fas fa-tasks"></i>
+    <!-- Ana Uygulama -->
+    <div class="app-container" id="app-container">
+        <div class="header">
+            <div class="app-title">
+                <div class="app-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h1>Arena</h1>
+            </div>
+            <p id="header-subtitle">Ödev Takip Sistemi</p>
+            
+            <div class="user-info">
+                <div class="profile">
+                    <div class="profile-img" id="user-avatar">Ö</div>
+                    <div class="user-details">
+                        <div class="user-name" id="user-name">Ahmet Yılmaz</div>
+                        <div class="user-class" id="user-class">9-A Sınıfı</div>
+                        <div class="user-type" id="user-type">Öğrenci</div>
                     </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-title">Tamamlanan</div>
-                    <div class="stat-value" id="completed-homework">0</div>
-                    <div class="stat-icon">
-                        <i class="fas fa-check-circle"></i>
+                <button class="logout-btn" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="container">
+            <!-- Ana Sayfa -->
+            <div class="page active" id="page-home">
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-title">Toplam Ödev</div>
+                        <div class="stat-value" id="total-homework">0</div>
+                        <div class="stat-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
                     </div>
-                </div>
-            </div>
-            
-            <div class="week-navigation">
-                <button id="prev-week"><i class="fas fa-chevron-left"></i></button>
-                <div class="current-week" id="current-week">30 Eylül - 6 Ekim 2023</div>
-                <button id="next-week"><i class="fas fa-chevron-right"></i></button>
-            </div>
-            
-            <div class="days-container" id="days-container">
-                <!-- Days will be populated by JavaScript -->
-            </div>
-            
-            <div class="homeworks-container">
-                <div class="homeworks-header">
-                    <h2 id="selected-day-title">Pazartesi Ödevleri</h2>
-                    <button class="filter-btn" id="filter-btn">
-                        <i class="fas fa-filter"></i>
-                    </button>
+                    <div class="stat-card">
+                        <div class="stat-title">Tamamlanan</div>
+                        <div class="stat-value" id="completed-homework">0</div>
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
                 </div>
                 
-                <div id="homeworks-list">
-                    <!-- Homeworks will be populated by JavaScript -->
+                <div class="week-navigation">
+                    <button id="prev-week"><i class="fas fa-chevron-left"></i></button>
+                    <div class="current-week" id="current-week">30 Eylül - 6 Ekim 2023</div>
+                    <button id="next-week"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                
+                <div class="days-container" id="days-container">
+                    <!-- Days will be populated by JavaScript -->
+                </div>
+                
+                <div class="homeworks-container">
+                    <div class="homeworks-header">
+                        <h2 id="selected-day-title">Pazartesi Ödevleri</h2>
+                        <button class="add-note-btn" id="add-note-btn">
+                            <i class="fas fa-plus"></i> Not Ekle
+                        </button>
+                    </div>
+                    
+                    <div id="homeworks-list">
+                        <!-- Homeworks will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Öğretmen Paneli (Sadece öğretmenler için) -->
+            <div class="page" id="page-teacher">
+                <div class="teacher-panel">
+                    <div class="panel-header">
+                        <h2>Öğretmen Paneli</h2>
+                    </div>
+                    
+                    <div class="class-selector">
+                        <select id="teacher-class-select">
+                            <option value="9A">9-A</option>
+                            <option value="9B">9-B</option>
+                            <option value="10A">10-A</option>
+                            <option value="10B">10-B</option>
+                            <option value="11A">11-A</option>
+                            <option value="11B">11-B</option>
+                            <option value="12A">12-A</option>
+                            <option value="12B">12-B</option>
+                        </select>
+                        <button class="add-class-btn" id="add-class-btn">Sınıf Ekle</button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="hw-title">Ödev Başlığı</label>
+                        <input type="text" id="hw-title" placeholder="Ödev başlığı">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="hw-subject">Ders</label>
+                        <select id="hw-subject">
+                            <option value="math">Matematik</option>
+                            <option value="science">Fen Bilimleri</option>
+                            <option value="turkish">Türkçe</option>
+                            <option value="history">Tarih</option>
+                            <option value="english">İngilizce</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="hw-date">Teslim Tarihi</label>
+                        <input type="date" id="hw-date">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="hw-desc">Açıklama</label>
+                        <textarea id="hw-desc" placeholder="Ödev açıklaması"></textarea>
+                    </div>
+                    
+                    <button class="submit-btn" id="assign-hw-btn">Ödevi Ver</button>
+                </div>
+                
+                <div class="homeworks-container">
+                    <div class="homeworks-header">
+                        <h2>Verilen Ödevler</h2>
+                    </div>
+                    
+                    <div id="assigned-homeworks">
+                        <!-- Assigned homeworks will be populated by JavaScript -->
+                    </div>
                 </div>
             </div>
         </div>
         
-        <!-- Takvim Sayfası -->
-        <div class="page" id="page-calendar">
-            <div class="calendar-container">
-                <div class="calendar-header">
-                    <h2>Ekim 2023</h2>
-                    <div>
-                        <button class="button outline"><i class="fas fa-chevron-left"></i></button>
-                        <button class="button outline"><i class="fas fa-chevron-right"></i></button>
-                    </div>
-                </div>
-                
-                <div class="calendar-grid" id="calendar-grid">
-                    <!-- Calendar will be populated by JavaScript -->
-                </div>
-            </div>
-            
-            <div class="homeworks-container">
-                <div class="homeworks-header">
-                    <h2>Seçilen Günün Ödevleri</h2>
-                </div>
-                
-                <div id="calendar-homeworks">
-                    <!-- Homeworks for selected day will be populated by JavaScript -->
-                </div>
-            </div>
-        </div>
+        <button class="add-button" id="add-button">
+            <i class="fas fa-plus"></i>
+        </button>
         
-        <!-- Dersler Sayfası -->
-        <div class="page" id="page-subjects">
-            <div class="subjects-container" id="subjects-container">
-                <!-- Subjects will be populated by JavaScript -->
+        <div class="bottom-nav">
+            <div class="nav-item active" data-page="page-home">
+                <i class="fas fa-home"></i>
+                <span>Ana Sayfa</span>
             </div>
-            
-            <div class="homeworks-container">
-                <div class="homeworks-header">
-                    <h2 id="selected-subject-title">Matematik Ödevleri</h2>
-                </div>
-                
-                <div id="subject-homeworks">
-                    <!-- Homeworks for selected subject will be populated by JavaScript -->
-                </div>
+            <div class="nav-item teacher-only" data-page="page-teacher">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>Öğretmen</span>
             </div>
-        </div>
-        
-        <!-- İstatistik Sayfası -->
-        <div class="page" id="page-statistics">
-            <div class="chart-container">
-                <div class="chart-header">
-                    <h2>Haftalık Ödev Dağılımı</h2>
-                </div>
-                
-                <div class="chart" id="homework-chart">
-                    <!-- Chart will be populated by JavaScript -->
-                </div>
-            </div>
-            
-            <div class="stats-grid">
-                <div class="stat-large">
-                    <div class="stat-large-title">Ortalama Tamamlama Oranı</div>
-                    <div class="stat-large-value">%72</div>
-                    <div class="progress-bar">
-                        <!-- Progress bar will be added -->
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-title">En Çok Ödev</div>
-                    <div class="stat-value">Matematik</div>
-                    <div class="stat-icon">
-                        <i class="fas fa-calculator"></i>
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-title">En Az Ödev</div>
-                    <div class="stat-value">Tarih</div>
-                    <div class="stat-icon">
-                        <i class="fas fa-monument"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Ayarlar Sayfası -->
-        <div class="page" id="page-settings">
-            <div class="settings-container">
-                <div class="settings-header">
-                    <h2>Uygulama Ayarları</h2>
-                </div>
-                
-                <div class="settings-item">
-                    <div class="settings-info">
-                        <div class="settings-title">Karanlık Mod</div>
-                        <div class="settings-desc">Arayüzü koyu temaya geçir</div>
-                    </div>
-                    <label class="switch">
-                        <input type="checkbox" id="dark-mode-toggle">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                
-                <div class="settings-item">
-                    <div class="settings-info">
-                        <div class="settings-title">Bildirimler</div>
-                        <div class="settings-desc">Ödev hatırlatıcılarını aç</div>
-                    </div>
-                    <label class="switch">
-                        <input type="checkbox" id="notifications-toggle" checked>
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                
-                <div class="settings-item">
-                    <div class="settings-info">
-                        <div class="settings-title">Otomatik Yedekleme</div>
-                        <div class="settings-desc">Verilerinizi buluta yedekle</div>
-                    </div>
-                    <label class="switch">
-                        <input type="checkbox" id="backup-toggle" checked>
-                        <span class="slider"></span>
-                    </label>
-                </div>
-            </div>
-            
-            <div class="settings-container">
-                <div class="settings-header">
-                    <h2>Hesap Ayarları</h2>
-                </div>
-                
-                <div class="settings-item">
-                    <div class="settings-info">
-                        <div class="settings-title">Profil Bilgileri</div>
-                        <div class="settings-desc">İsim, sınıf ve diğer bilgiler</div>
-                    </div>
-                    <button class="button outline">Düzenle</button>
-                </div>
-                
-                <div class="settings-item">
-                    <div class="settings-info">
-                        <div class="settings-title">Şifre Değiştir</div>
-                        <div class="settings-desc">Hesap şifrenizi güncelleyin</div>
-                    </div>
-                    <button class="button outline">Değiştir</button>
-                </div>
-            </div>
-            
-            <div class="settings-container">
-                <div class="settings-header">
-                    <h2>Veri Yönetimi</h2>
-                </div>
-                
-                <div class="settings-item">
-                    <div class="settings-info">
-                        <div class="settings-title">Verileri Dışa Aktar</div>
-                        <div class="settings-desc">Ödevlerinizi yedekleyin</div>
-                    </div>
-                    <button class="button outline"><i class="fas fa-download"></i> Aktar</button>
-                </div>
-                
-                <div class="settings-item">
-                    <div class="settings-info">
-                        <div class="settings-title">Tüm Verileri Sil</div>
-                        <div class="settings-desc">Uygulamayı sıfırlayın</div>
-                    </div>
-                    <button class="button outline danger"><i class="fas fa-trash"></i> Sil</button>
-                </div>
-            </div>
-            
-            <div class="settings-container">
-                <div class="settings-header">
-                    <h2>Hakkında</h2>
-                </div>
-                
-                <div class="settings-item">
-                    <div class="settings-info">
-                        <div class="settings-title">Uygulama Versiyonu</div>
-                        <div class="settings-desc">Arena v1.2.0</div>
-                    </div>
-                </div>
-                
-                <div class="settings-item">
-                    <div class="settings-info">
-                        <div class="settings-title">Geliştirici</div>
-                        <div class="settings-desc">Arena Eğitim Teknolojileri</div>
-                    </div>
-                </div>
-                
-                <div class="settings-item">
-                    <div class="settings-info">
-                        <div class="settings-title">Lisans</div>
-                        <div class="settings-desc">Telif Hakkı © 2023</div>
-                    </div>
-                </div>
+            <div class="nav-item" data-page="page-profile">
+                <i class="fas fa-user"></i>
+                <span>Profil</span>
             </div>
         </div>
     </div>
     
-    <button class="add-button" id="add-button">
-        <i class="fas fa-plus"></i>
-    </button>
-    
-    <div class="bottom-nav">
-        <div class="nav-item active" data-page="page-home">
-            <i class="fas fa-home"></i>
-            <span>Ana Sayfa</span>
-        </div>
-        <div class="nav-item" data-page="page-calendar">
-            <i class="fas fa-calendar-alt"></i>
-            <span>Takvim</span>
-        </div>
-        <div class="nav-item" data-page="page-subjects">
-            <i class="fas fa-book"></i>
-            <span>Dersler</span>
-        </div>
-        <div class="nav-item" data-page="page-statistics">
-            <i class="fas fa-chart-pie"></i>
-            <span>İstatistik</span>
-        </div>
-        <div class="nav-item" data-page="page-settings">
-            <i class="fas fa-cog"></i>
-            <span>Ayarlar</span>
-        </div>
-    </div>
-    
-    <!-- Add Homework Modal -->
-    <div class="modal" id="add-modal">
+    <!-- Not Ekleme Modal -->
+    <div class="modal" id="note-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Yeni Ödev Ekle</h2>
+                <h2>Ödev Notu Ekle</h2>
                 <button class="close-modal">&times;</button>
             </div>
             
-            <div class="form-group">
-                <label for="homework-title">Ödev Başlığı</label>
-                <input type="text" id="homework-title" placeholder="Ödev adını yazın">
-            </div>
+            <input type="hidden" id="note-homework-id">
             
             <div class="form-group">
-                <label for="homework-subject">Ders</label>
-                <select id="homework-subject">
-                    <option value="math">Matematik</option>
-                    <option value="science">Fen Bilimleri</option>
-                    <option value="turkish">Türkçe</option>
-                    <option value="history">Tarih</option>
-                    <option value="english">İngilizce</option>
-                    <option value="physics">Fizik</option>
-                    <option value="chemistry">Kimya</option>
-                    <option value="biology">Biyoloji</option>
-                </select>
+                <label for="note-title">Ödev Başlığı</label>
+                <input type="text" id="note-title" readonly>
             </div>
             
             <div class="form-group">
-                <label for="homework-date">Teslim Tarihi</label>
-                <input type="date" id="homework-date">
+                <label for="note-content">Notunuz</label>
+                <textarea id="note-content" placeholder="Bu ödev ile ilgili notlarınız"></textarea>
             </div>
             
-            <div class="form-group">
-                <label for="homework-time">Teslim Saati</label>
-                <input type="time" id="homework-time">
-            </div>
-            
-            <div class="form-group">
-                <label for="homework-priority">Öncelik</label>
-                <select id="homework-priority">
-                    <option value="normal">Normal</option>
-                    <option value="high">Yüksek</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="homework-desc">Açıklama (opsiyonel)</label>
-                <textarea id="homework-desc" placeholder="Ödev ile ilgili detaylar"></textarea>
-            </div>
-            
-            <button class="submit-btn" id="save-homework">Ödevi Kaydet</button>
-        </div>
-    </div>
-
-    <!-- Edit Homework Modal -->
-    <div class="modal" id="edit-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Ödevi Düzenle</h2>
-                <button class="close-modal">&times;</button>
-            </div>
-            
-            <input type="hidden" id="edit-id">
-            
-            <div class="form-group">
-                <label for="edit-title">Ödev Başlığı</label>
-                <input type="text" id="edit-title" placeholder="Ödev adını yazın">
-            </div>
-            
-            <div class="form-group">
-                <label for="edit-subject">Ders</label>
-                <select id="edit-subject">
-                    <option value="math">Matematik</option>
-                    <option value="science">Fen Bilimleri</option>
-                    <option value="turkish">Türkçe</option>
-                    <option value="history">Tarih</option>
-                    <option value="english">İngilizce</option>
-                    <option value="physics">Fizik</option>
-                    <option value="chemistry">Kimya</option>
-                    <option value="biology">Biyoloji</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="edit-date">Teslim Tarihi</label>
-                <input type="date" id="edit-date">
-            </div>
-            
-            <div class="form-group">
-                <label for="edit-time">Teslim Saati</label>
-                <input type="time" id="edit-time">
-            </div>
-            
-            <div class="form-group">
-                <label for="edit-priority">Öncelik</label>
-                <select id="edit-priority">
-                    <option value="normal">Normal</option>
-                    <option value="high">Yüksek</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="edit-desc">Açıklama (opsiyonel)</label>
-                <textarea id="edit-desc" placeholder="Ödev ile ilgili detaylar"></textarea>
-            </div>
-            
-            <button class="submit-btn" id="update-homework">Değişiklikleri Kaydet</button>
+            <button class="submit-btn" id="save-note-btn">Notu Kaydet</button>
         </div>
     </div>
 
     <script>
         // Uygulama verileri
         let homeworks = JSON.parse(localStorage.getItem('arenaHomeworks')) || [];
-        let currentDate = new Date();
-        let selectedDate = new Date();
-        let darkMode = localStorage.getItem('arenaDarkMode') === 'true';
-        let currentPage = 'page-home';
+        let users = JSON.parse(localStorage.getItem('arenaUsers')) || [];
+        let classes = JSON.parse(localStorage.getItem('arenaClasses')) || [
+            { id: '9A', name: '9-A', teacher: 'ogretmen1' },
+            { id: '9B', name: '9-B', teacher: 'ogretmen2' },
+            { id: '10A', name: '10-A', teacher: 'ogretmen1' },
+            { id: '10B', name: '10-B', teacher: 'ogretmen2' },
+            { id: '11A', name: '11-A', teacher: 'ogretmen1' },
+            { id: '11B', name: '11-B', teacher: 'ogretmen2' },
+            { id: '12A', name: '12-A', teacher: 'ogretmen1' },
+            { id: '12B', name: '12-B', teacher: 'ogretmen2' }
+        ];
         
-        // Ders bilgileri
+        // Varsayılan kullanıcılar (ilk çalıştırmada oluşturulur)
+        if (users.length === 0) {
+            users = [
+                { username: 'ogrenci1', password: '123', name: 'Ahmet Yılmaz', type: 'student', class: '9A' },
+                { username: 'ogrenci2', password: '123', name: 'Ayşe Kaya', type: 'student', class: '9A' },
+                { username: 'ogretmen1', password: '123', name: 'Mehmet Öğretmen', type: 'teacher' },
+                { username: 'ogretmen2', password: '123', name: 'Zeynep Öğretmen', type: 'teacher' }
+            ];
+            localStorage.setItem('arenaUsers', JSON.stringify(users));
+        }
+        
+        // Varsayılan ödevler (ilk çalıştırmada oluşturulur)
+        if (homeworks.length === 0) {
+            homeworks = [
+                { 
+                    id: 1, 
+                    title: "Matematik problemleri sayfa 42-43", 
+                    subject: "math", 
+                    dueDate: "2023-10-02", 
+                    dueTime: "15:00", 
+                    assignedBy: "ogretmen1", 
+                    assignedTo: "9A",
+                    description: "Çift sayılı problemleri yapınız.",
+                    notes: {}
+                },
+                { 
+                    id: 2, 
+                    title: "Fen bilgisi deney raporu", 
+                    subject: "science", 
+                    dueDate: "2023-10-03", 
+                    dueTime: "10:00", 
+                    assignedBy: "ogretmen2", 
+                    assignedTo: "9A",
+                    description: "Asit-baz tepkimeleri deney raporu",
+                    notes: {}
+                }
+            ];
+            localStorage.setItem('arenaHomeworks', JSON.stringify(homeworks));
+        }
+        
         const subjects = {
-            math: { name: "Matematik", class: "math", icon: "calculator" },
-            science: { name: "Fen Bilimleri", class: "science", icon: "flask" },
-            turkish: { name: "Türkçe", class: "turkish", icon: "book" },
-            history: { name: "Tarih", class: "history", icon: "monument" },
-            english: { name: "İngilizce", class: "english", icon: "language" },
-            physics: { name: "Fizik", class: "physics", icon: "atom" },
-            chemistry: { name: "Kimya", class: "chemistry", icon: "vial" },
-            biology: { name: "Biyoloji", class: "biology", icon: "dna" }
+            math: { name: "Matematik", class: "math" },
+            science: { name: "Fen Bilimleri", class: "science" },
+            turkish: { name: "Türkçe", class: "turkish" },
+            history: { name: "Tarih", class: "history" },
+            english: { name: "İngilizce", class: "english" }
         };
         
         const daysOfWeek = ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"];
         
+        let currentUser = null;
+        let currentDate = new Date();
+        let selectedDate = new Date();
+        let currentPage = 'page-home';
+        
         // Uygulamayı başlat
         document.addEventListener('DOMContentLoaded', function() {
-            initTheme();
-            initializeDays();
-            initializeCalendar();
-            initializeSubjects();
-            updateStats();
+            checkLoginStatus();
             setupEventListeners();
-            updateChart();
-            
-            // Sayfa yüklendiğinde aktif sayfayı göster
-            showPage(currentPage);
         });
         
-        // Tema ayarlarını yükle
-        function initTheme() {
-            if (darkMode) {
-                document.body.classList.add('dark-mode');
-                document.getElementById('theme-toggle').innerHTML = '<i class="fas fa-sun"></i>';
-                document.getElementById('dark-mode-toggle').checked = true;
+        // Giriş durumunu kontrol et
+        function checkLoginStatus() {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showApp();
             } else {
-                document.body.classList.remove('dark-mode');
-                document.getElementById('theme-toggle').innerHTML = '<i class="fas fa-moon"></i>';
-                document.getElementById('dark-mode-toggle').checked = false;
+                showLogin();
             }
+        }
+        
+        // Olay dinleyicilerini kur
+        function setupEventListeners() {
+            // Giriş ekranı
+            document.querySelectorAll('.user-type-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.user-type-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const userType = this.getAttribute('data-type');
+                    document.getElementById('class-group').style.display = userType === 'student' ? 'block' : 'none';
+                });
+            });
+            
+            document.getElementById('login-btn').addEventListener('click', login);
+            
+            // Ana uygulama
+            document.getElementById('logout-btn').addEventListener('click', logout);
+            
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const pageId = this.getAttribute('data-page');
+                    showPage(pageId);
+                });
+            });
+            
+            // Öğretmen paneli
+            document.getElementById('assign-hw-btn').addEventListener('click', assignHomework);
+            
+            // Öğrenci not ekleme
+            document.getElementById('add-note-btn').addEventListener('click', function() {
+                alert('Bir ödev seçin ve not ekleyin');
+            });
+            
+            document.getElementById('save-note-btn').addEventListener('click', saveNote);
+            
+            // Hafta navigasyonu
+            document.getElementById('prev-week').addEventListener('click', function() {
+                changeWeek(-1);
+            });
+            
+            document.getElementById('next-week').addEventListener('click', function() {
+                changeWeek(1);
+            });
+            
+            // Bugünün tarihini varsayılan olarak ayarla
+            const today = new Date();
+            document.getElementById('hw-date').value = formatDate(today);
+        }
+        
+        // Giriş yap
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const userType = document.querySelector('.user-type-btn.active').getAttribute('data-type');
+            const userClass = document.getElementById('class').value;
+            
+            if (!username || !password) {
+                alert('Lütfen kullanıcı adı ve şifre giriniz!');
+                return;
+            }
+            
+            if (userType === 'student' && !userClass) {
+                alert('Lütfen sınıf seçiniz!');
+                return;
+            }
+            
+            // Kullanıcıyı doğrula
+            const user = users.find(u => u.username === username && u.password === password && u.type === userType);
+            
+            if (user) {
+                if (userType === 'student' && user.class !== userClass) {
+                    alert('Bu kullanıcı adı seçtiğiniz sınıfa kayıtlı değil!');
+                    return;
+                }
+                
+                currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                showApp();
+            } else {
+                alert('Kullanıcı adı veya şifre hatalı!');
+            }
+        }
+        
+        // Çıkış yap
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            showLogin();
+        }
+        
+        // Giriş ekranını göster
+        function showLogin() {
+            document.getElementById('login-container').style.display = 'flex';
+            document.getElementById('app-container').style.display = 'none';
+        }
+        
+        // Uygulamayı göster
+        function showApp() {
+            document.getElementById('login-container').style.display = 'none';
+            document.getElementById('app-container').style.display = 'block';
+            
+            // Kullanıcı bilgilerini güncelle
+            document.getElementById('user-name').textContent = currentUser.name;
+            document.getElementById('user-avatar').textContent = currentUser.name.charAt(0);
+            document.getElementById('user-type').textContent = currentUser.type === 'teacher' ? 'Öğretmen' : 'Öğrenci';
+            
+            if (currentUser.type === 'student') {
+                document.getElementById('user-class').textContent = currentUser.class + ' Sınıfı';
+                document.getElementById('user-class').style.display = 'block';
+                document.querySelectorAll('.teacher-only').forEach(el => el.style.display = 'none');
+                document.getElementById('add-button').style.display = 'none';
+            } else {
+                document.getElementById('user-class').style.display = 'none';
+                document.querySelectorAll('.teacher-only').forEach(el => el.style.display = 'flex');
+                document.getElementById('add-button').style.display = 'flex';
+            }
+            
+            // Sayfaları yükle
+            initializeDays();
+            updateStats();
+            
+            if (currentUser.type === 'teacher') {
+                loadAssignedHomeworks();
+            }
+            
+            showPage('page-home');
+        }
+        
+        // Sayfa değiştirme
+        function showPage(pageId) {
+            // Tüm sayfaları gizle
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // İstenen sayfayı göster
+            document.getElementById(pageId).classList.add('active');
+            
+            // Navigasyonu güncelle
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            document.querySelector(`.nav-item[data-page="${pageId}"]`).classList.add('active');
+            
+            // Mevcut sayfayı kaydet
+            currentPage = pageId;
         }
         
         // Günleri oluştur
@@ -1513,7 +1321,13 @@
                 homeworkCount.className = 'homework-count';
                 
                 // Gün için ödev sayısını hesapla
-                const count = homeworks.filter(hw => hw.dueDate === formatDate(dayDate)).length;
+                let count = 0;
+                if (currentUser.type === 'student') {
+                    count = homeworks.filter(hw => hw.dueDate === formatDate(dayDate) && hw.assignedTo === currentUser.class).length;
+                } else {
+                    count = homeworks.filter(hw => hw.dueDate === formatDate(dayDate) && hw.assignedBy === currentUser.username).length;
+                }
+                
                 homeworkCount.textContent = `${count} ödev`;
                 
                 dayCard.appendChild(dayName);
@@ -1539,119 +1353,6 @@
             }
         }
         
-        // Takvimi oluştur
-        function initializeCalendar() {
-            const calendarGrid = document.getElementById('calendar-grid');
-            calendarGrid.innerHTML = '';
-            
-            // Gün başlıklarını ekle
-            ['Pz', 'Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct'].forEach(day => {
-                const dayHeader = document.createElement('div');
-                dayHeader.className = 'calendar-day-header';
-                dayHeader.textContent = day;
-                calendarGrid.appendChild(dayHeader);
-            });
-            
-            // Ayın günlerini ekle
-            const year = currentDate.getFullYear();
-            const month = currentDate.getMonth();
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
-            
-            // İlk günden önceki boşlukları ekle
-            for (let i = 0; i < firstDay.getDay(); i++) {
-                const emptyDay = document.createElement('div');
-                emptyDay.className = 'calendar-day';
-                calendarGrid.appendChild(emptyDay);
-            }
-            
-            // Ayın günlerini ekle
-            for (let i = 1; i <= lastDay.getDate(); i++) {
-                const dayDate = new Date(year, month, i);
-                const dayElement = document.createElement('div');
-                dayElement.className = 'calendar-day';
-                
-                if (isToday(dayDate)) {
-                    dayElement.classList.add('today');
-                }
-                
-                if (isSameDay(dayDate, selectedDate)) {
-                    dayElement.classList.add('active');
-                }
-                
-                const dayNumber = document.createElement('div');
-                dayNumber.className = 'day-number';
-                dayNumber.textContent = i;
-                
-                dayElement.appendChild(dayNumber);
-                
-                // Ödev var mı kontrol et
-                const homeworkCount = homeworks.filter(hw => hw.dueDate === formatDate(dayDate)).length;
-                if (homeworkCount > 0) {
-                    const homeworkDot = document.createElement('div');
-                    homeworkDot.className = 'homework-dot';
-                    dayElement.appendChild(homeworkDot);
-                }
-                
-                dayElement.setAttribute('data-date', formatDate(dayDate));
-                dayElement.addEventListener('click', function() {
-                    const dateStr = this.getAttribute('data-date');
-                    selectedDate = parseDate(dateStr);
-                    renderCalendarHomeworks(dateStr);
-                    
-                    // Aktif günü güncelle
-                    document.querySelectorAll('.calendar-day').forEach(day => day.classList.remove('active'));
-                    this.classList.add('active');
-                });
-                
-                calendarGrid.appendChild(dayElement);
-            }
-            
-            // İlk günü göster
-            renderCalendarHomeworks(formatDate(selectedDate));
-        }
-        
-        // Dersleri oluştur
-        function initializeSubjects() {
-            const subjectsContainer = document.getElementById('subjects-container');
-            subjectsContainer.innerHTML = '';
-            
-            Object.entries(subjects).forEach(([key, subject]) => {
-                const subjectCard = document.createElement('div');
-                subjectCard.className = 'subject-card';
-                subjectCard.setAttribute('data-subject', key);
-                
-                const subjectIcon = document.createElement('div');
-                subjectIcon.className = `subject-icon ${subject.class}-bg`;
-                subjectIcon.innerHTML = `<i class="fas fa-${subject.icon}"></i>`;
-                
-                const subjectName = document.createElement('div');
-                subjectName.className = 'subject-name';
-                subjectName.textContent = subject.name;
-                
-                const subjectCount = document.createElement('div');
-                subjectCount.className = 'subject-count';
-                
-                // Derse ait ödev sayısını hesapla
-                const count = homeworks.filter(hw => hw.subject === key).length;
-                subjectCount.textContent = `${count} ödev`;
-                
-                subjectCard.appendChild(subjectIcon);
-                subjectCard.appendChild(subjectName);
-                subjectCard.appendChild(subjectCount);
-                
-                subjectCard.addEventListener('click', function() {
-                    const subjectKey = this.getAttribute('data-subject');
-                    renderSubjectHomeworks(subjectKey);
-                });
-                
-                subjectsContainer.appendChild(subjectCard);
-            });
-            
-            // İlk dersi göster
-            renderSubjectHomeworks('math');
-        }
-        
         // Ödevleri listele
         function renderHomeworks(date) {
             const homeworksList = document.getElementById('homeworks-list');
@@ -1662,22 +1363,20 @@
             selectedDayTitle.textContent = `${dayName} Ödevleri`;
             
             // Tarihe göre ödevleri filtrele
-            const dayHomeworks = homeworks.filter(hw => hw.dueDate === date);
+            let dayHomeworks = [];
+            if (currentUser.type === 'student') {
+                dayHomeworks = homeworks.filter(hw => hw.dueDate === date && hw.assignedTo === currentUser.class);
+            } else {
+                dayHomeworks = homeworks.filter(hw => hw.dueDate === date && hw.assignedBy === currentUser.username);
+            }
             
             if (dayHomeworks.length === 0) {
                 homeworksList.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-clipboard-list"></i>
                         <p>Bu gün için ödev bulunmamaktadır</p>
-                        <button class="add-first-btn" id="add-first-btn">İlk Ödevi Ekle</button>
                     </div>
                 `;
-                
-                document.getElementById('add-first-btn').addEventListener('click', function() {
-                    document.getElementById('homework-date').value = date;
-                    openAddModal();
-                });
-                
                 return;
             }
             
@@ -1686,316 +1385,86 @@
             dayHomeworks.forEach(hw => {
                 const homeworkItem = document.createElement('div');
                 homeworkItem.className = 'homework-item';
-                if (hw.completed) homeworkItem.classList.add('completed');
-                if (hw.priority === 'high') homeworkItem.classList.add('priority-high');
                 
                 homeworkItem.innerHTML = `
-                    <input type="checkbox" class="homework-checkbox" ${hw.completed ? 'checked' : ''}>
                     <div class="homework-info">
                         <div class="homework-title">${hw.title}</div>
                         <div class="homework-details">
                             <span class="homework-subject ${subjects[hw.subject].class}">${subjects[hw.subject].name}</span>
                             <span class="homework-time"><i class="far fa-clock"></i> ${hw.dueTime}</span>
+                            <span class="homework-teacher"><i class="fas fa-user-graduate"></i> ${getTeacherName(hw.assignedBy)}</span>
                         </div>
+                        ${hw.notes && hw.notes[currentUser.username] ? `
+                        <div class="homework-note">
+                            <strong>Notunuz:</strong> ${hw.notes[currentUser.username]}
+                        </div>
+                        ` : ''}
                     </div>
                     <div class="homework-actions">
-                        <button class="edit-btn"><i class="far fa-edit"></i></button>
-                        <button class="delete-btn"><i class="far fa-trash-alt"></i></button>
+                        ${currentUser.type === 'student' ? `
+                        <button class="add-note-action" data-id="${hw.id}"><i class="far fa-sticky-note"></i></button>
+                        ` : ''}
                     </div>
                 `;
                 
-                // Etkinlik dinleyicileri ekle
-                const checkbox = homeworkItem.querySelector('.homework-checkbox');
-                checkbox.addEventListener('change', function() {
-                    toggleHomeworkComplete(hw.id, this.checked);
-                });
-                
-                const editBtn = homeworkItem.querySelector('.edit-btn');
-                editBtn.addEventListener('click', function() {
-                    openEditModal(hw.id);
-                });
-                
-                const deleteBtn = homeworkItem.querySelector('.delete-btn');
-                deleteBtn.addEventListener('click', function() {
-                    deleteHomework(hw.id);
-                });
+                // Not ekleme butonu
+                if (currentUser.type === 'student') {
+                    const addNoteBtn = homeworkItem.querySelector('.add-note-action');
+                    addNoteBtn.addEventListener('click', function() {
+                        openNoteModal(hw.id);
+                    });
+                }
                 
                 homeworksList.appendChild(homeworkItem);
             });
         }
         
-        // Takvim için ödevleri listele
-        function renderCalendarHomeworks(date) {
-            const calendarHomeworks = document.getElementById('calendar-homeworks');
+        // Öğretmenin verdiği ödevleri yükle
+        function loadAssignedHomeworks() {
+            const assignedHomeworks = document.getElementById('assigned-homeworks');
+            const teacherHomeworks = homeworks.filter(hw => hw.assignedBy === currentUser.username);
             
-            // Tarihe göre ödevleri filtrele
-            const dayHomeworks = homeworks.filter(hw => hw.dueDate === date);
-            
-            if (dayHomeworks.length === 0) {
-                calendarHomeworks.innerHTML = `
+            if (teacherHomeworks.length === 0) {
+                assignedHomeworks.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-clipboard-list"></i>
-                        <p>Bu gün için ödev bulunmamaktadır</p>
+                        <p>Henüz hiç ödev vermediniz</p>
                     </div>
                 `;
                 return;
             }
             
-            // Ödev listesini oluştur
-            calendarHomeworks.innerHTML = '';
-            dayHomeworks.forEach(hw => {
+            assignedHomeworks.innerHTML = '';
+            teacherHomeworks.forEach(hw => {
                 const homeworkItem = document.createElement('div');
                 homeworkItem.className = 'homework-item';
-                if (hw.completed) homeworkItem.classList.add('completed');
-                if (hw.priority === 'high') homeworkItem.classList.add('priority-high');
                 
                 homeworkItem.innerHTML = `
-                    <input type="checkbox" class="homework-checkbox" ${hw.completed ? 'checked' : ''}>
                     <div class="homework-info">
                         <div class="homework-title">${hw.title}</div>
                         <div class="homework-details">
                             <span class="homework-subject ${subjects[hw.subject].class}">${subjects[hw.subject].name}</span>
-                            <span class="homework-time"><i class="far fa-clock"></i> ${hw.dueTime}</span>
-                        </div>
-                    </div>
-                `;
-                
-                // Etkinlik dinleyicileri ekle
-                const checkbox = homeworkItem.querySelector('.homework-checkbox');
-                checkbox.addEventListener('change', function() {
-                    toggleHomeworkComplete(hw.id, this.checked);
-                });
-                
-                calendarHomeworks.appendChild(homeworkItem);
-            });
-        }
-        
-        // Ders için ödevleri listele
-        function renderSubjectHomeworks(subjectKey) {
-            const subjectHomeworks = document.getElementById('subject-homeworks');
-            const selectedSubjectTitle = document.getElementById('selected-subject-title');
-            
-            // Başlığı güncelle
-            selectedSubjectTitle.textContent = `${subjects[subjectKey].name} Ödevleri`;
-            
-            // Derse göre ödevleri filtrele
-            const subjectHw = homeworks.filter(hw => hw.subject === subjectKey);
-            
-            if (subjectHw.length === 0) {
-                subjectHomeworks.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-clipboard-list"></i>
-                        <p>Bu ders için ödev bulunmamaktadır</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            // Ödev listesini oluştur
-            subjectHomeworks.innerHTML = '';
-            subjectHw.forEach(hw => {
-                const homeworkItem = document.createElement('div');
-                homeworkItem.className = 'homework-item';
-                if (hw.completed) homeworkItem.classList.add('completed');
-                if (hw.priority === 'high') homeworkItem.classList.add('priority-high');
-                
-                homeworkItem.innerHTML = `
-                    <input type="checkbox" class="homework-checkbox" ${hw.completed ? 'checked' : ''}>
-                    <div class="homework-info">
-                        <div class="homework-title">${hw.title}</div>
-                        <div class="homework-details">
                             <span class="homework-time"><i class="far fa-calendar"></i> ${formatDate(parseDate(hw.dueDate), true)}</span>
                             <span class="homework-time"><i class="far fa-clock"></i> ${hw.dueTime}</span>
+                            <span class="homework-teacher"><i class="fas fa-users"></i> ${hw.assignedTo} Sınıfı</span>
                         </div>
-                    </div>
-                    <div class="homework-actions">
-                        <button class="edit-btn"><i class="far fa-edit"></i></button>
-                        <button class="delete-btn"><i class="far fa-trash-alt"></i></button>
+                        <div class="homework-desc">${hw.description}</div>
                     </div>
                 `;
                 
-                // Etkinlik dinleyicileri ekle
-                const checkbox = homeworkItem.querySelector('.homework-checkbox');
-                checkbox.addEventListener('change', function() {
-                    toggleHomeworkComplete(hw.id, this.checked);
-                });
-                
-                const editBtn = homeworkItem.querySelector('.edit-btn');
-                editBtn.addEventListener('click', function() {
-                    openEditModal(hw.id);
-                });
-                
-                const deleteBtn = homeworkItem.querySelector('.delete-btn');
-                deleteBtn.addEventListener('click', function() {
-                    deleteHomework(hw.id);
-                });
-                
-                subjectHomeworks.appendChild(homeworkItem);
+                assignedHomeworks.appendChild(homeworkItem);
             });
         }
         
-        // Grafiği güncelle
-        function updateChart() {
-            const chart = document.getElementById('homework-chart');
-            chart.innerHTML = '';
+        // Ödev ata (öğretmen)
+        function assignHomework() {
+            const title = document.getElementById('hw-title').value;
+            const subject = document.getElementById('hw-subject').value;
+            const date = document.getElementById('hw-date').value;
+            const description = document.getElementById('hw-desc').value;
+            const assignedTo = document.getElementById('teacher-class-select').value;
             
-            // Haftalık ödev sayılarını hesapla
-            const weekDays = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
-            const homeworkCounts = [0, 0, 0, 0, 0, 0, 0];
-            
-            homeworks.forEach(hw => {
-                const day = new Date(hw.dueDate).getDay();
-                // Pazar 0, Pazartesi 1, ... Cumartesi 6
-                // Haftanın günlerini Pazartesi'den başlatmak için indeksi ayarla
-                const index = day === 0 ? 6 : day - 1;
-                homeworkCounts[index]++;
-            });
-            
-            // Maksimum değeri bul
-            const max = Math.max(...homeworkCounts, 1);
-            
-            // Çubukları oluştur
-            weekDays.forEach((day, i) => {
-                const height = (homeworkCounts[i] / max) * 150; // 150px maksimum yükseklik
-                
-                const bar = document.createElement('div');
-                bar.className = 'chart-bar';
-                bar.style.height = `${height}px`;
-                
-                const label = document.createElement('div');
-                label.className = 'chart-label';
-                label.textContent = day;
-                
-                const value = document.createElement('div');
-                value.className = 'chart-value';
-                value.textContent = homeworkCounts[i];
-                value.style.position = 'absolute';
-                value.style.top = '-25px';
-                value.style.left = '0';
-                value.style.right = '0';
-                value.style.textAlign = 'center';
-                value.style.fontSize = '0.8rem';
-                value.style.fontWeight = 'bold';
-                value.style.color = 'var(--primary)';
-                
-                bar.appendChild(value);
-                bar.appendChild(label);
-                chart.appendChild(bar);
-            });
-        }
-        
-        // Olay dinleyicilerini kur
-        function setupEventListeners() {
-            // Modal işlemleri
-            document.getElementById('add-button').addEventListener('click', openAddModal);
-            document.querySelectorAll('.close-modal').forEach(btn => {
-                btn.addEventListener('click', closeModals);
-            });
-            
-            // Ödev ekleme/güncelleme
-            document.getElementById('save-homework').addEventListener('click', saveHomework);
-            document.getElementById('update-homework').addEventListener('click', updateHomework);
-            
-            // Hafta navigasyonu
-            document.getElementById('prev-week').addEventListener('click', function() {
-                changeWeek(-1);
-            });
-            
-            document.getElementById('next-week').addEventListener('click', function() {
-                changeWeek(1);
-            });
-            
-            // Tema değiştirme
-            document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
-            document.getElementById('dark-mode-toggle').addEventListener('change', toggleTheme);
-            
-            // Navigasyon butonları
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    const pageId = this.getAttribute('data-page');
-                    showPage(pageId);
-                });
-            });
-            
-            // Dışarı tıklayınca modal'ı kapat
-            window.addEventListener('click', function(event) {
-                if (event.target.classList.contains('modal')) {
-                    closeModals();
-                }
-            });
-            
-            // Bugünün tarihini varsayılan olarak ayarla
-            const today = new Date();
-            document.getElementById('homework-date').value = formatDate(today);
-            document.getElementById('homework-time').value = '23:59';
-        }
-        
-        // Sayfa değiştirme
-        function showPage(pageId) {
-            // Tüm sayfaları gizle
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            
-            // İstenen sayfayı göster
-            document.getElementById(pageId).classList.add('active');
-            
-            // Navigasyonu güncelle
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            document.querySelector(`.nav-item[data-page="${pageId}"]`).classList.add('active');
-            
-            // Mevcut sayfayı kaydet
-            currentPage = pageId;
-            
-            // Sayfaya özel güncellemeler
-            if (pageId === 'page-calendar') {
-                initializeCalendar();
-            } else if (pageId === 'page-subjects') {
-                initializeSubjects();
-            } else if (pageId === 'page-statistics') {
-                updateChart();
-            }
-        }
-        
-        // Modal açma/kapama
-        function openAddModal() {
-            document.getElementById('add-modal').style.display = 'flex';
-        }
-        
-        function openEditModal(id) {
-            const homework = homeworks.find(hw => hw.id === id);
-            if (homework) {
-                document.getElementById('edit-id').value = homework.id;
-                document.getElementById('edit-title').value = homework.title;
-                document.getElementById('edit-subject').value = homework.subject;
-                document.getElementById('edit-date').value = homework.dueDate;
-                document.getElementById('edit-time').value = homework.dueTime;
-                document.getElementById('edit-priority').value = homework.priority || 'normal';
-                document.getElementById('edit-desc').value = homework.description || '';
-                
-                document.getElementById('edit-modal').style.display = 'flex';
-            }
-        }
-        
-        function closeModals() {
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.style.display = 'none';
-            });
-        }
-        
-        // Yeni ödev ekle
-        function saveHomework() {
-            const title = document.getElementById('homework-title').value;
-            const subject = document.getElementById('homework-subject').value;
-            const date = document.getElementById('homework-date').value;
-            const time = document.getElementById('homework-time').value;
-            const priority = document.getElementById('homework-priority').value;
-            const description = document.getElementById('homework-desc').value;
-            
-            if (!title || !date || !time) {
+            if (!title || !date) {
                 alert('Lütfen zorunlu alanları doldurunuz!');
                 return;
             }
@@ -2006,10 +1475,11 @@
                 title,
                 subject,
                 dueDate: date,
-                dueTime: time,
-                priority,
+                dueTime: "23:59",
+                assignedBy: currentUser.username,
+                assignedTo,
                 description,
-                completed: false,
+                notes: {},
                 createdAt: new Date().toISOString()
             };
             
@@ -2018,97 +1488,56 @@
             
             // UI'ı güncelle
             initializeDays();
-            initializeCalendar();
-            initializeSubjects();
-            renderHomeworks(date);
-            updateStats();
-            updateChart();
+            loadAssignedHomeworks();
             
-            // Modal'ı kapat ve formu temizle
-            closeModals();
-            document.getElementById('homework-title').value = '';
-            document.getElementById('homework-desc').value = '';
+            // Formu temizle
+            document.getElementById('hw-title').value = '';
+            document.getElementById('hw-desc').value = '';
             
             // Başarı mesajı
-            showNotification('Ödev başarıyla eklendi!');
+            showNotification('Ödev başarıyla verildi!');
         }
         
-        // Ödev güncelle
-        function updateHomework() {
-            const id = parseInt(document.getElementById('edit-id').value);
-            const title = document.getElementById('edit-title').value;
-            const subject = document.getElementById('edit-subject').value;
-            const date = document.getElementById('edit-date').value;
-            const time = document.getElementById('edit-time').value;
-            const priority = document.getElementById('edit-priority').value;
-            const description = document.getElementById('edit-desc').value;
+        // Not modalını aç
+        function openNoteModal(homeworkId) {
+            const homework = homeworks.find(hw => hw.id === homeworkId);
+            if (homework) {
+                document.getElementById('note-homework-id').value = homework.id;
+                document.getElementById('note-title').value = homework.title;
+                document.getElementById('note-content').value = homework.notes[currentUser.username] || '';
+                
+                document.getElementById('note-modal').style.display = 'flex';
+            }
+        }
+        
+        // Not kaydet
+        function saveNote() {
+            const homeworkId = parseInt(document.getElementById('note-homework-id').value);
+            const noteContent = document.getElementById('note-content').value;
             
-            if (!title || !date || !time) {
-                alert('Lütfen zorunlu alanları doldurunuz!');
+            if (!noteContent) {
+                alert('Lütfen not içeriği giriniz!');
                 return;
             }
             
-            // Ödevi güncelle
-            const index = homeworks.findIndex(hw => hw.id === id);
+            // Ödevi bul ve notu ekle
+            const index = homeworks.findIndex(hw => hw.id === homeworkId);
             if (index !== -1) {
-                homeworks[index] = {
-                    ...homeworks[index],
-                    title,
-                    subject,
-                    dueDate: date,
-                    dueTime: time,
-                    priority,
-                    description
-                };
+                if (!homeworks[index].notes) {
+                    homeworks[index].notes = {};
+                }
                 
+                homeworks[index].notes[currentUser.username] = noteContent;
                 saveToLocalStorage();
-                
-                // UI'ı güncelle
-                initializeDays();
-                initializeCalendar();
-                initializeSubjects();
-                renderHomeworks(date);
-                updateStats();
-                updateChart();
                 
                 // Modal'ı kapat
-                closeModals();
-                
-                // Başarı mesajı
-                showNotification('Ödev başarıyla güncellendi!');
-            }
-        }
-        
-        // Ödev sil
-        function deleteHomework(id) {
-            if (confirm('Bu ödevi silmek istediğinize emin misiniz?')) {
-                homeworks = homeworks.filter(hw => hw.id !== id);
-                saveToLocalStorage();
+                document.getElementById('note-modal').style.display = 'none';
                 
                 // UI'ı güncelle
-                initializeDays();
-                initializeCalendar();
-                initializeSubjects();
                 renderHomeworks(formatDate(selectedDate));
-                updateStats();
-                updateChart();
                 
-                // Bilgi mesajı
-                showNotification('Ödev silindi.');
-            }
-        }
-        
-        // Ödev tamamlama durumunu değiştir
-        function toggleHomeworkComplete(id, completed) {
-            const homework = homeworks.find(hw => hw.id === id);
-            if (homework) {
-                homework.completed = completed;
-                saveToLocalStorage();
-                updateStats();
-                
-                if (completed) {
-                    showNotification('Ödev tamamlandı olarak işaretlendi!');
-                }
+                // Başarı mesajı
+                showNotification('Not başarıyla kaydedildi!');
             }
         }
         
@@ -2118,26 +1547,19 @@
             initializeDays();
         }
         
-        // Tema değiştirme
-        function toggleTheme() {
-            darkMode = !darkMode;
-            localStorage.setItem('arenaDarkMode', darkMode);
-            
-            if (darkMode) {
-                document.body.classList.add('dark-mode');
-                document.getElementById('theme-toggle').innerHTML = '<i class="fas fa-sun"></i>';
-                document.getElementById('dark-mode-toggle').checked = true;
-            } else {
-                document.body.classList.remove('dark-mode');
-                document.getElementById('theme-toggle').innerHTML = '<i class="fas fa-moon"></i>';
-                document.getElementById('dark-mode-toggle').checked = false;
-            }
-        }
-        
         // İstatistikleri güncelle
         function updateStats() {
-            const total = homeworks.length;
-            const completed = homeworks.filter(hw => hw.completed).length;
+            let total = 0;
+            let completed = 0;
+            
+            if (currentUser.type === 'student') {
+                total = homeworks.filter(hw => hw.assignedTo === currentUser.class).length;
+                // Bu örnekte tamamlanan ödevleri basitçe notu olanlar olarak kabul ediyoruz
+                completed = homeworks.filter(hw => hw.assignedTo === currentUser.class && hw.notes && hw.notes[currentUser.username]).length;
+            } else {
+                total = homeworks.filter(hw => hw.assignedBy === currentUser.username).length;
+                completed = 0; // Öğretmenler için tamamlanma istatistiği farklı hesaplanabilir
+            }
             
             document.getElementById('total-homework').textContent = total;
             document.getElementById('completed-homework').textContent = completed;
@@ -2146,6 +1568,8 @@
         // LocalStorage'a kaydet
         function saveToLocalStorage() {
             localStorage.setItem('arenaHomeworks', JSON.stringify(homeworks));
+            localStorage.setItem('arenaUsers', JSON.stringify(users));
+            localStorage.setItem('arenaClasses', JSON.stringify(classes));
         }
         
         // Bildirim göster
@@ -2222,6 +1646,11 @@
             return date1.getDate() === date2.getDate() &&
                    date1.getMonth() === date2.getMonth() &&
                    date1.getFullYear() === date2.getFullYear();
+        }
+        
+        function getTeacherName(username) {
+            const teacher = users.find(u => u.username === username);
+            return teacher ? teacher.name : username;
         }
     </script>
 </body>
