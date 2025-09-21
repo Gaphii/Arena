@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Arena - Ödev Takip</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{
+      --primary:#6a11cb; --secondary:#2575fc; --accent:#ff416c;
+      --background:#f5f7ff; --card-bg:#fff;
+      --text-primary:#2d3748; --text-secondary:#718096;
+      --border-radius:12px; --shadow:0 4px 12px rgba(0,0,0,0.08);
+      --transition: all 0.25s ease;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: "Poppins", "Segoe UI", sans-serif;
+      background:var(--background); color:var(--text-primary); -webkit-font-smoothing:antialiased;
+    }
+    .login-container{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,var(--primary),var(--secondary));}
+    .login-box{background:var(--card-bg);border-radius:12px;padding:28px;max-width:420px;width:100%;box-shadow:var(--shadow);text-align:center;}
+    .app-title{display:flex;align-items:center;gap:12px;justify-content:center}
+    .app-icon{width:44px;height:44px;border-radius:10px;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff}
+    h1{font-size:1.4rem;margin:0}
+    .user-type-selector{display:flex;margin:16px 0;border-radius:10px;overflow:hidden;background:#f1f3f7}
+    .user-type-btn{flex:1;padding:10px;border:0;background:none;cursor:pointer}
+    .user-type-btn.active{background:var(--primary);color:#fff}
+    .form-group{margin-bottom:14px;text-align:left}
+    .form-group label{display:block;margin-bottom:6px;font-weight:600;color:var(--text-primary)}
+    .form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #e6e9ef;font-size:14px}
+    .login-btn{width:100%;padding:12px;border:0;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;font-weight:700;cursor:pointer}
+    /* App */
+    .app-container{display:none;padding-bottom:120px}
+    .header{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;padding:18px;border-radius:0 0 12px 12px;box-shadow:var(--shadow)}
+    .user-info{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+    .profile{display:flex;align-items:center;gap:12px}
+    .profile-img{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-weight:700}
+    .container{max-width:1100px;margin:18px auto;padding:0 16px}
+    .stats-container{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:16px}
+    .stat-card{background:var(--card-bg);padding:14px;border-radius:12px;box-shadow:var(--shadow)}
+    .week-navigation{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+    .week-navigation button{width:40px;height:40px;border-radius:50%;border:0;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;cursor:pointer}
+    .days-container{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:16px}
+    .day-card{background:var(--card-bg);padding:10px;border-radius:10px;box-shadow:var(--shadow);text-align:center;cursor:pointer;min-height:88px;display:flex;flex-direction:column;align-items:center}
+    .day-card.today{border:2px solid var(--accent)}
+    .day-card.active{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff}
+    .homeworks-container{background:var(--card-bg);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
+    .homework-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.06)}
+    .homework-item:last-child{border-bottom:none}
+    .homework-info{flex:1}
+    .homework-title{font-weight:600}
+    .homework-details{font-size:13px;color:var(--text-secondary);display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+    .homework-checkbox{width:20px;height:20px}
+    .homework-item.completed .homework-title{ text-decoration:line-through; opacity:0.7 }
+    .homework-actions{display:flex;gap:8px;align-items:center}
+    .add-button{position:fixed;right:20px;bottom:96px;width:56px;height:56px;border-radius:50%;border:0;background:linear-gradient(135deg,var(--accent),#ff4b2b);color:#fff;font-size:20px;box-shadow:0 8px 20px rgba(0,0,0,0.12);cursor:pointer}
+    .bottom-nav{position:fixed;left:0;right:0;bottom:0;background:var(--card-bg);display:flex;justify-content:space-around;padding:12px 24px;box-shadow:0 -6px 18px rgba(0,0,0,0.06)}
+    .nav-item{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-secondary);cursor:pointer}
+    .nav-item.active{color:var(--primary)}
+    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:1000;align-items:center;justify-content:center;padding:16px}
+    .modal-content{background:var(--card-bg);border-radius:12px;padding:18px;max-width:520px;width:100%;box-shadow:var(--shadow)}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .close-modal{background:none;border:0;font-size:22px;cursor:pointer}
+    .empty-state{padding:28px;text-align:center;color:var(--text-secondary)}
+    @media(max-width:900px){ .days-container{grid-template-columns:repeat(4,1fr)} }
+    @media(max-width:480px){ .days-container{grid-template-columns:repeat(2,1fr)} .stats-container{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <!-- Login -->
+  <div class="login-container" id="login-container">
+    <div class="login-box">
+      <div class="app-title"><div class="app-icon"><i class="fas fa-trophy"></i></div><h1>Arena</h1></div>
+      <p>Öğretmen ve Öğrenci Ödev Takip Sistemi</p>
+
+      <div class="user-type-selector">
+        <button class="user-type-btn active" data-type="student">Öğrenci</button>
+        <button class="user-type-btn" data-type="teacher">Öğretmen</button>
+      </div>
+
+      <div class="form-group">
+        <label for="username">Kullanıcı Adı</label>
+        <input id="username" type="text" placeholder="Kullanıcı adınız">
+      </div>
+      <div class="form-group">
+        <label for="password">Şifre</label>
+        <input id="password" type="password" placeholder="Şifreniz">
+      </div>
+      <div class="form-group" id="class-group">
+        <label for="class">Sınıf</label>
+        <select id="class">
+          <option value="9A">9-A</option><option value="9B">9-B</option>
+          <option value="10A">10-A</option><option value="10B">10-B</option>
+          <option value="11A">11-A</option><option value="11B">11-B</option>
+          <option value="12A">12-A</option><option value="12B">12-B</option>
+        </select>
+      </div>
+
+      <button class="login-btn" id="login-btn">Giriş Yap</button>
+    </div>
+  </div>
+
+  <!-- App -->
+  <div class="app-container" id="app-container">
+    <div class="header">
+      <div class="app-title"><div class="app-icon"><i class="fas fa-trophy"></i></div><h1>Arena</h1></div>
+      <div class="user-info">
+        <div class="profile">
+          <div class="profile-img" id="user-avatar">Ö</div>
+          <div>
+            <div id="user-name">Ahmet Yılmaz</div>
+            <div id="user-class" style="font-size:13px;opacity:0.9">9-A Sınıfı</div>
+            <div id="user-type" style="font-size:13px;opacity:0.9">ÖĞRENCİ</div>
+          </div>
+        </div>
+        <button class="logout-btn" id="logout-btn" title="Çıkış"><i class="fas fa-sign-out-alt" style="color:white"></i></button>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="page active" id="page-home">
+        <div class="stats-container">
+          <div class="stat-card"><div style="font-size:13px;color:var(--text-secondary)">Toplam Ödev</div><div id="total-homework" style="font-weight:700;font-size:20px">0</div></div>
+          <div class="stat-card"><div style="font-size:13px;color:var(--text-secondary)">Tamamlanan</div><div id="completed-homework" style="font-weight:700;font-size:20px">0</div></div>
+        </div>
+
+        <div class="week-navigation">
+          <button id="prev-week"><i class="fas fa-chevron-left"></i></button>
+          <div style="flex:1;text-align:center;font-weight:700" id="current-week">...</div>
+          <button id="next-week"><i class="fas fa-chevron-right"></i></button>
+        </div>
+
+        <div class="days-container" id="days-container"></div>
+
+        <div class="homeworks-container">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <h3 id="selected-day-title" style="margin:0">Gün Ödevleri</h3>
+            <button class="add-note-btn" id="add-note-btn"><i class="fas fa-plus"></i> Not Ekle</button>
+          </div>
+          <div id="homeworks-list"></div>
+        </div>
+      </div>
+
+      <div class="page" id="page-teacher" style="display:none;margin-top:18px">
+        <div class="teacher-panel homeworks-container">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h3>Öğretmen Paneli</h3></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+            <select id="teacher-class-select">
+              <option value="9A">9-A</option><option value="9B">9-B</option>
+              <option value="10A">10-A</option><option value="10B">10-B</option>
+              <option value="11A">11-A</option><option value="11B">11-B</option>
+              <option value="12A">12-A</option><option value="12B">12-B</option>
+            </select>
+            <button id="add-class-btn" class="add-first-btn" style="background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;border:0;padding:8px 14px;border-radius:8px">Sınıf Ekle</button>
+          </div>
+
+          <div class="form-group"><label for="hw-title">Ödev Başlığı</label><input id="hw-title" type="text"></div>
+          <div class="form-group"><label for="hw-subject">Ders</label>
+            <select id="hw-subject"><option value="math">Matematik</option><option value="science">Fen</option><option value="turkish">Türkçe</option><option value="history">Tarih</option><option value="english">İngilizce</option></select>
+          </div>
+          <div class="form-group"><label for="hw-date">Teslim Tarihi</label><input id="hw-date" type="date"></div>
+          <div class="form-group"><label for="hw-desc">Açıklama</label><textarea id="hw-desc" rows="4"></textarea></div>
+          <button class="submit-btn" id="assign-hw-btn" style="background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;border:0;padding:12px;border-radius:8px">Ödevi Ver</button>
+
+          <div style="margin-top:18px">
+            <h4>Verilen Ödevler</h4>
+            <div id="assigned-homeworks"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-profile" style="display:none;margin-top:18px">
+        <div class="profile-page homeworks-container">
+          <div style="display:flex;gap:14px;align-items:center;margin-bottom:12px">
+            <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:26px" id="profile-avatar">A</div>
+            <div>
+              <div id="profile-name" style="font-weight:700;font-size:18px">Ahmet Yılmaz</div>
+              <div id="profile-type" style="opacity:0.9">Öğrenci - 9-A</div>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:12px">
+            <div style="background:#f7f9ff;padding:12px;border-radius:8px"><div id="profile-total-homework" style="font-weight:700">0</div><div style="color:var(--text-secondary)">Toplam Ödev</div></div>
+            <div style="background:#f7f9ff;padding:12px;border-radius:8px"><div id="profile-completed-homework" style="font-weight:700">0</div><div style="color:var(--text-secondary)">Tamamlanan</div></div>
+          </div>
+
+          <div>
+            <h4>Son Ödevler</h4>
+            <div id="profile-homeworks"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="add-button" id="add-button" title="Yeni Ödev">+</button>
+
+    <div class="bottom-nav">
+      <div class="nav-item active" data-page="page-home"><i class="fas fa-home"></i><div style="font-size:12px">Ana Sayfa</div></div>
+      <div class="nav-item teacher-only" data-page="page-teacher"><i class="fas fa-chalkboard-teacher"></i><div style="font-size:12px">Öğretmen</div></div>
+      <div class="nav-item" data-page="page-profile"><i class="fas fa-user"></i><div style="font-size:12px">Profil</div></div>
+    </div>
+
+  </div>
+
+  <!-- Note Modal -->
+  <div class="modal" id="note-modal">
+    <div class="modal-content">
+      <div class="modal-header"><h3>Ödev Notu Ekle</h3><button class="close-modal" id="close-note-modal">&times;</button></div>
+      <input type="hidden" id="note-homework-id">
+      <div class="form-group"><label for="note-title">Ödev Başlığı</label><input id="note-title" type="text" readonly></div>
+      <div class="form-group"><label for="note-content">Notunuz</label><textarea id="note-content" rows="5"></textarea></div>
+      <button class="submit-btn" id="save-note-btn" style="background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;border:0;padding:10px;border-radius:8px">Notu Kaydet</button>
+    </div>
+  </div>
+
+<script>
+/* Data ve başlangıç */
+let homeworks = JSON.parse(localStorage.getItem('arenaHomeworks')) || [];
+let users = JSON.parse(localStorage.getItem('arenaUsers')) || [];
+let classes = JSON.parse(localStorage.getItem('arenaClasses')) || [
+  {id:'9A', name:'9-A', teacher:'ogretmen1'},
+  {id:'9B', name:'9-B', teacher:'ogretmen2'},
+  {id:'10A', name:'10-A', teacher:'ogretmen1'},
+  {id:'10B', name:'10-B', teacher:'ogretmen2'},
+  {id:'11A', name:'11-A', teacher:'ogretmen1'},
+  {id:'11B', name:'11-B', teacher:'ogretmen2'},
+  {id:'12A', name:'12-A', teacher:'ogretmen1'},
+  {id:'12B', name:'12-B', teacher:'ogretmen2'}
+];
+
+if(users.length === 0){
+  users = [
+    {username:'ogrenci1', password:'123', name:'Ahmet Yılmaz', type:'student', class:'9A'},
+    {username:'ogrenci2', password:'123', name:'Ayşe Kaya', type:'student', class:'9A'},
+    {username:'ogretmen1', password:'123', name:'Mehmet Öğretmen', type:'teacher'},
+    {username:'ogretmen2', password:'123', name:'Zeynep Öğretmen', type:'teacher'}
+  ];
+  localStorage.setItem('arenaUsers', JSON.stringify(users));
+}
+if(homeworks.length === 0){
+  homeworks = [
+    {id:1,title:"Matematik problemleri s.42-43",subject:"math",dueDate:"2023-10-02",dueTime:"15:00",assignedBy:"ogretmen1",assignedTo:"9A",description:"Çift sayıları çöz.",notes:{},completed:{}},
+    {id:2,title:"Fen deney raporu",subject:"science",dueDate:"2023-10-03",dueTime:"10:00",assignedBy:"ogretmen2",assignedTo:"9A",description:"Asit-baz raporu",notes:{},completed:{}}
+  ];
+  localStorage.setItem('arenaHomeworks', JSON.stringify(homeworks));
+}
+
+/* Konfig */
+const subjects = { math:{name:"Matematik", class:"math"}, science:{name:"Fen"}, turkish:{name:"Türkçe"}, history:{name:"Tarih"}, english:{name:"İngilizce"} };
+const daysOfWeek = ["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
+let currentUser = null;
+let selectedDate = new Date();
+
+/* Başlangıç */
+document.addEventListener('DOMContentLoaded', ()=>{
+  setupEventListeners();
+  checkLoginStatus();
+});
+
+/* Eventler */
+function setupEventListeners(){
+  document.querySelectorAll('.user-type-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.user-type-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('class-group').style.display = btn.dataset.type === 'student' ? 'block' : 'none';
+    });
+  });
+  document.getElementById('login-btn').addEventListener('click', login);
+  document.getElementById('logout-btn').addEventListener('click', logout);
+  document.querySelectorAll('.nav-item').forEach(it=> it.addEventListener('click', ()=> showPage(it.dataset.page)));
+  document.getElementById('assign-hw-btn').addEventListener('click', assignHomework);
+  document.getElementById('add-class-btn').addEventListener('click', addClass);
+  document.getElementById('add-button').addEventListener('click', ()=> showPage('page-teacher'));
+  document.getElementById('prev-week').addEventListener('click', ()=> changeWeek(-1));
+  document.getElementById('next-week').addEventListener('click', ()=> changeWeek(1));
+  document.getElementById('close-note-modal').addEventListener('click', ()=> document.getElementById('note-modal').style.display='none');
+  document.getElementById('save-note-btn').addEventListener('click', saveNote);
+  document.getElementById('add-note-btn').addEventListener('click', ()=> showNotification('Lütfen bir ödev seçin ve not ekleyin.'));
+  document.querySelectorAll('.teacher-only').forEach(el=> el.style.display='none');
+  // set hw-date default to today in YYYY-MM-DD
+  document.getElementById('hw-date').value = toISODate(new Date());
+}
+
+/* Auth */
+function login(){
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  const userType = document.querySelector('.user-type-btn.active').dataset.type;
+  const userClass = document.getElementById('class').value;
+  if(!username || !password){ showNotification('Kullanıcı adı ve şifre giriniz'); return; }
+  const user = users.find(u => u.username === username && u.password === password && u.type === userType);
+  if(!user){ showNotification('Kullanıcı adı veya şifre hatalı'); return; }
+  if(userType === 'student' && user.class !== userClass){ showNotification('Bu kullanıcı seçtiğiniz sınıfa kayıtlı değil'); return; }
+  currentUser = user;
+  localStorage.setItem('currentUser', JSON.stringify(currentUser));
+  showApp();
+}
+function logout(){ currentUser=null; localStorage.removeItem('currentUser'); showLogin(); }
+
+/* UI göster/gizle */
+function checkLoginStatus(){
+  const saved = localStorage.getItem('currentUser');
+  if(saved){ currentUser = JSON.parse(saved); showApp(); } else { showLogin(); }
+}
+function showLogin(){
+  document.getElementById('login-container').style.display='flex';
+  document.getElementById('app-container').style.display='none';
+}
+function showApp(){
+  document.getElementById('login-container').style.display='none';
+  document.getElementById('app-container').style.display='block';
+  document.getElementById('user-name').textContent = currentUser.name;
+  document.getElementById('user-avatar').textContent = currentUser.name.charAt(0);
+  document.getElementById('user-type').textContent = currentUser.type === 'teacher' ? 'ÖĞRETMEN' : 'ÖĞRENCİ';
+  if(currentUser.type === 'student'){
+    document.getElementById('user-class').textContent = currentUser.class + ' Sınıfı';
+    document.querySelectorAll('.teacher-only').forEach(el=> el.style.display='none');
+    document.getElementById('add-button').style.display='none';
+    document.getElementById('page-teacher').style.display = 'none';
+  } else {
+    document.getElementById('user-class').style.display='none';
+    document.querySelectorAll('.teacher-only').forEach(el=> el.style.display='flex');
+    document.getElementById('add-button').style.display='block';
+    document.getElementById('page-teacher').style.display = 'block';
+  }
+  initializeDays();
+  updateStats();
+  loadAssignedHomeworks();
+  showPage('page-home');
+}
+
+/* Sayfa değiştirme */
+function showPage(pageId){
+  document.querySelectorAll('.page').forEach(p=> p.style.display='none');
+  const page = document.getElementById(pageId);
+  if(page) page.style.display = 'block';
+  document.querySelectorAll('.nav-item').forEach(n=> n.classList.remove('active'));
+  const nav = document.querySelector(`.nav-item[data-page="${pageId}"]`);
+  if(nav) nav.classList.add('active');
+  if(pageId === 'page-profile') loadProfilePage();
+  if(pageId === 'page-teacher') loadAssignedHomeworks();
+}
+
+/* Tarihler yardımcı */
+function toISODate(d){ const yyyy = d.getFullYear(); const mm = String(d.getMonth()+1).padStart(2,'0'); const dd = String(d.getDate()).padStart(2,'0'); return `${yyyy}-${mm}-${dd}`; }
+function formatDate(date, short=false){
+  if(typeof date === 'string') date = new Date(date);
+  if(isNaN(date)) return '';
+  const yyyy = date.getFullYear(); const mm = String(date.getMonth()+1).padStart(2,'0'); const dd = String(date.getDate()).padStart(2,'0');
+  return short ? `${dd}.${mm}` : `${yyyy}-${mm}-${dd}`;
+}
+function parseDate(str){
+  if(!str) return new Date();
+  if(str.includes('.')){ const [d,m] = str.split('.'); const y = new Date().getFullYear(); return new Date(y, parseInt(m,10)-1, parseInt(d,10)); }
+  const parts = str.split('-'); return new Date(parseInt(parts[0],10), parseInt(parts[1],10)-1, parseInt(parts[2],10));
+}
+function getStartOfWeek(date){
+  const d = new Date(date); const day = d.getDay(); // Sunday=0
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday start
+  return new Date(d.setDate(diff));
+}
+function isSameDay(a,b){ return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
+function isToday(d){ return isSameDay(d, new Date()); }
+
+/* Günleri oluştur ve render */
+function initializeDays(){
+  const daysContainer = document.getElementById('days-container');
+  daysContainer.innerHTML = '';
+  const startOfWeek = getStartOfWeek(selectedDate || new Date());
+  const endOfWeek = new Date(startOfWeek); endOfWeek.setDate(startOfWeek.getDate()+6);
+  document.getElementById('current-week').textContent = `${formatDate(startOfWeek,true)} - ${formatDate(endOfWeek,true)} ${endOfWeek.getFullYear()}`;
+  for(let i=0;i<7;i++){
+    const d = new Date(startOfWeek); d.setDate(startOfWeek.getDate()+i);
+    const card = document.createElement('div'); card.className='day-card';
+    if(isToday(d)) card.classList.add('today');
+    if(isSameDay(d, selectedDate)) card.classList.add('active');
+    card.dataset.date = formatDate(d); // ISO YYYY-MM-DD
+    const dayName = document.createElement('div'); dayName.className='day-name'; dayName.textContent = daysOfWeek[d.getDay()];
+    const dateEl = document.createElement('div'); dateEl.className='date'; dateEl.textContent = formatDate(d,true);
+    const hwCount = document.createElement('div'); hwCount.className='homework-count';
+    let count = 0;
+    if(currentUser){
+      if(currentUser.type === 'student') count = homeworks.filter(hw => hw.dueDate === formatDate(d) && hw.assignedTo === currentUser.class).length;
+      else count = homeworks.filter(hw => hw.dueDate === formatDate(d) && hw.assignedBy === currentUser.username).length;
+    }
+    hwCount.textContent = `${count} ödev`;
+    card.appendChild(dayName); card.appendChild(dateEl); card.appendChild(hwCount);
+    card.addEventListener('click', ()=>{
+      document.querySelectorAll('.day-card').forEach(c=> c.classList.remove('active'));
+      card.classList.add('active');
+      selectedDate = parseDate(card.dataset.date);
+      renderHomeworks(card.dataset.date);
+    });
+    daysContainer.appendChild(card);
+  }
+  // render selected or today
+  const toRender = formatDate(selectedDate) || formatDate(new Date());
+  renderHomeworks(toRender);
+}
+
+/* Render homeworks for date (ISO string) */
+function renderHomeworks(dateISO){
+  const homeworksList = document.getElementById('homeworks-list');
+  const selectedDayTitle = document.getElementById('selected-day-title');
+  const d = parseDate(dateISO);
+  selectedDayTitle.textContent = `${daysOfWeek[d.getDay()]} Ödevleri`;
+  let dayHomeworks = [];
+  if(currentUser.type === 'student'){
+    dayHomeworks = homeworks.filter(hw => hw.dueDate === dateISO && hw.assignedTo === currentUser.class);
+  } else {
+    dayHomeworks = homeworks.filter(hw => hw.dueDate === dateISO && hw.assignedBy === currentUser.username);
+  }
+  if(dayHomeworks.length === 0){
+    homeworksList.innerHTML = '<div class="empty-state"><i class="fas fa-clipboard-list"></i><p>Bu gün için ödev bulunmamaktadır</p></div>';
+    return;
+  }
+  homeworksList.innerHTML = '';
+  dayHomeworks.forEach(hw=>{
+    const completed = hw.completed && hw.completed[currentUser ? currentUser.username : ''] === true;
+    const item = document.createElement('div'); item.className = 'homework-item' + (completed ? ' completed' : '');
+    const checkboxHTML = currentUser.type === 'student' ? `<input type="checkbox" class="homework-checkbox" data-id="${hw.id}" ${completed ? 'checked' : ''}>` : '';
+    item.innerHTML = `
+      ${checkboxHTML}
+      <div class="homework-info">
+        <div class="homework-title">${hw.title}</div>
+        <div class="homework-details">
+          <span class="homework-subject">${subjects[hw.subject] ? subjects[hw.subject].name : hw.subject}</span>
+          <span class="homework-time"><i class="far fa-clock"></i> ${hw.dueTime || ''}</span>
+          <span class="homework-teacher"><i class="fas fa-user-graduate"></i> ${getTeacherName(hw.assignedBy)}</span>
+        </div>
+        ${hw.notes && currentUser.type === 'student' && hw.notes[currentUser.username] ? `<div style="margin-top:8px;color:var(--text-secondary)"><strong>Notunuz:</strong> ${hw.notes[currentUser.username]}</div>` : ''}
+      </div>
+      <div class="homework-actions">
+        ${currentUser.type === 'student' ? `<button class="add-note-action" data-id="${hw.id}" title="Not ekle"><i class="far fa-sticky-note"></i></button>` : ''}
+      </div>
+    `;
+    homeworksList.appendChild(item);
+    // events
+    if(currentUser.type === 'student'){
+      const cb = item.querySelector('.homework-checkbox');
+      cb.addEventListener('change', (e)=> {
+        toggleHomeworkComplete(hw.id, e.target.checked);
+        if(e.target.checked) item.classList.add('completed'); else item.classList.remove('completed');
+      });
+      const addNoteBtn = item.querySelector('.add-note-action');
+      if(addNoteBtn) addNoteBtn.addEventListener('click', ()=> openNoteModal(hw.id));
+    }
+  });
+}
+
+/* Toggle completed */
+function toggleHomeworkComplete(hwId, checked){
+  const idx = homeworks.findIndex(h=> h.id === hwId);
+  if(idx === -1) return;
+  if(!homeworks[idx].completed) homeworks[idx].completed = {};
+  homeworks[idx].completed[currentUser.username] = checked;
+  saveToLocalStorage();
+  updateStats();
+}
+
+/* Assign homework (teacher) */
+function assignHomework(){
+  const title = document.getElementById('hw-title').value.trim();
+  const subject = document.getElementById('hw-subject').value;
+  const date = document.getElementById('hw-date').value;
+  const desc = document.getElementById('hw-desc').value.trim();
+  const assignedTo = document.getElementById('teacher-class-select').value;
+  if(!title || !date){ showNotification('Başlık ve tarih zorunludur'); return; }
+  const newHW = {
+    id: Date.now(),
+    title, subject, dueDate: date, dueTime: "23:59",
+    assignedBy: currentUser.username,
+    assignedTo, description: desc, notes: {}, completed: {}
+  };
+  homeworks.push(newHW);
+  saveToLocalStorage();
+  initializeDays();
+  loadAssignedHomeworks();
+  document.getElementById('hw-title').value=''; document.getElementById('hw-desc').value='';
+  showNotification('Ödev başarıyla verildi');
+}
+
+/* Open note modal */
+function openNoteModal(homeworkId){
+  const hw = homeworks.find(h=> h.id === homeworkId);
+  if(!hw) return;
+  document.getElementById('note-homework-id').value = hw.id;
+  document.getElementById('note-title').value = hw.title;
+  document.getElementById('note-content').value = hw.notes && hw.notes[currentUser.username] ? hw.notes[currentUser.username] : '';
+  document.getElementById('note-modal').style.display = 'flex';
+}
+
+/* Save note */
+function saveNote(){
+  const hwId = parseInt(document.getElementById('note-homework-id').value,10);
+  const content = document.getElementById('note-content').value.trim();
+  if(!content){ showNotification('Not içeriği boş olamaz'); return; }
+  const idx = homeworks.findIndex(h=> h.id === hwId);
+  if(idx === -1) return;
+  if(!homeworks[idx].notes) homeworks[idx].notes = {};
+  homeworks[idx].notes[currentUser.username] = content;
+  saveToLocalStorage();
+  document.getElementById('note-modal').style.display = 'none';
+  renderHomeworks(formatDate(selectedDate));
+  showNotification('Not kaydedildi');
+}
+
+/* Load assigned homeworks (teacher view) */
+function loadAssignedHomeworks(){
+  const el = document.getElementById('assigned-homeworks');
+  if(!el) return;
+  const teacherHws = homeworks.filter(h=> currentUser && h.assignedBy === currentUser.username);
+  if(teacherHws.length === 0){
+    el.innerHTML = '<div class="empty-state"><i class="fas fa-clipboard-list"></i><p>Henüz ödev verilmemiş</p></div>'; return;
+  }
+  el.innerHTML = '';
+  teacherHws.sort((a,b)=> new Date(b.dueDate) - new Date(a.dueDate)).forEach(hw=>{
+    const div = document.createElement('div'); div.className='homework-item';
+    div.innerHTML = `<div class="homework-info"><div class="homework-title">${hw.title}</div>
+      <div class="homework-details"><span>${hw.assignedTo} Sınıfı</span><span>${formatDate(parseDate(hw.dueDate),true)}</span></div>
+      <div style="margin-top:6px;color:var(--text-secondary)">${hw.description || ''}</div></div>`;
+    el.appendChild(div);
+  });
+}
+
+/* Profile */
+function loadProfilePage(){
+  document.getElementById('profile-name').textContent = currentUser.name;
+  document.getElementById('profile-avatar').textContent = currentUser.name.charAt(0);
+  document.getElementById('profile-type').textContent = currentUser.type === 'teacher' ? 'Öğretmen' : `Öğrenci - ${currentUser.class}`;
+  let total=0, completedCount=0;
+  if(currentUser.type === 'student'){
+    total = homeworks.filter(h=> h.assignedTo === currentUser.class).length;
+    completedCount = homeworks.filter(h=> h.assignedTo === currentUser.class && h.completed && h.completed[currentUser.username]).length;
+  } else {
+    total = homeworks.filter(h=> h.assignedBy === currentUser.username).length;
+    completedCount = homeworks.filter(h=> h.assignedBy === currentUser.username && Object.values(h.completed||{}).filter(Boolean).length>0).length;
+  }
+  document.getElementById('profile-total-homework').textContent = total;
+  document.getElementById('profile-completed-homework').textContent = completedCount;
+  // recent
+  const ph = document.getElementById('profile-homeworks'); ph.innerHTML='';
+  let list = currentUser.type === 'student' ? homeworks.filter(h=> h.assignedTo === currentUser.class) : homeworks.filter(h=> h.assignedBy === currentUser.username);
+  list.sort((a,b)=> new Date(b.dueDate)-new Date(a.dueDate)); list.slice(0,5).forEach(hw=>{
+    const div = document.createElement('div'); div.className='homework-item';
+    div.innerHTML = `<div class="homework-info"><div class="homework-title">${hw.title}</div><div class="homework-details"><span>${formatDate(parseDate(hw.dueDate),true)}</span><span>${hw.dueTime||''}</span></div></div>`;
+    ph.appendChild(div);
+  });
+}
+
+/* Stats update */
+function updateStats(){
+  let total=0, completed=0;
+  if(currentUser.type === 'student'){
+    total = homeworks.filter(h=> h.assignedTo === currentUser.class).length;
+    completed = homeworks.filter(h=> h.assignedTo === currentUser.class && h.completed && h.completed[currentUser.username]).length;
+  } else {
+    total = homeworks.filter(h=> h.assignedBy === currentUser.username).length;
+    completed = homeworks.filter(h=> h.assignedBy === currentUser.username && Object.values(h.completed||{}).filter(Boolean).length>0).length;
+  }
+  document.getElementById('total-homework').textContent = total;
+  document.getElementById('completed-homework').textContent = completed;
+}
+
+/* Save */
+function saveToLocalStorage(){ localStorage.setItem('arenaHomeworks', JSON.stringify(homeworks)); localStorage.setItem('arenaUsers', JSON.stringify(users)); localStorage.setItem('arenaClasses', JSON.stringify(classes)); }
+
+/* Utilities */
+function getTeacherName(username){ const t = users.find(u=> u.username === username); return t ? t.name : username; }
+
+/* Week navigation */
+function changeWeek(dir){ selectedDate.setDate(selectedDate.getDate() + dir*7); initializeDays(); }
+
+/* Add class prototype (teacher) */
+function addClass(){
+  const id = prompt('Yeni sınıf kodu (ör: 9C)').trim();
+  if(!id) return;
+  const name = prompt('Sınıf adı (ör: 9-C)').trim();
+  if(!name) return;
+  classes.push({id, name, teacher: currentUser ? currentUser.username : 'ogretmen1'});
+  // add to selects
+  const sel = document.getElementById('teacher-class-select');
+  const opt = document.createElement('option'); opt.value = id; opt.textContent = name; sel.appendChild(opt);
+  const classSel = document.getElementById('class');
+  const opt2 = document.createElement('option'); opt2.value = id; opt2.textContent = name; classSel.appendChild(opt2);
+  saveToLocalStorage();
+  showNotification('Sınıf eklendi');
+}
+
+/* Notification */
+function showNotification(message){
+  const n = document.createElement('div');
+  n.style.position='fixed'; n.style.bottom='20px'; n.style.left='50%';
+  n.style.transform='translateX(-50%)'; n.style.backgroundColor='var(--primary)'; n.style.color='white';
+  n.style.padding='10px 18px'; n.style.borderRadius='22px'; n.style.zIndex='2000'; n.style.boxShadow='0 6px 18px rgba(0,0,0,0.14)';
+  n.textContent = message; document.body.appendChild(n);
+  setTimeout(()=>{ n.style.opacity='0'; setTimeout(()=> n.remove(),300); },3000);
+}
+
+/* Helpers: to ensure date formats consistent */
+function ensureISODateString(str){
+  // Accept either dd.mm or YYYY-MM-DD -> return YYYY-MM-DD
+  if(!str) return '';
+  if(str.includes('.')){
+    const [d,m] = str.split('.');
+    const y = new Date().getFullYear();
+    return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  }
+  return str;
+}
+
+/* Add basic keyboard: close modal on ESC */
+document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') document.getElementById('note-modal').style.display='none'; });
+
+/* Initial selectedDate */
+selectedDate = new Date();
+initializeDays();
+
+</script>
+</body>
+</html>
