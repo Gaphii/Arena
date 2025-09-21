@@ -232,10 +232,18 @@ let classes = JSON.parse(localStorage.getItem('arenaClasses')) || [
 
 if(users.length === 0){
   users = [
+    {username:'admin', password:'admin123', name:'Yönetici', type:'teacher'},
+    {username:'ogrenci1', password:'123', name:'Ahmet Yılmaz', type:'student', class:'9A'},
+    {username:'ogrenci2', password:'123', name:'Ayşe Kaya', type:'student', class:'9A'},
+    {username:'ogrenci1', password:'123', name:'Ahmet Yılmaz', type:'student', class:'9A'},
+    {username:'ogrenci2', password:'123', name:'Ayşe Kaya', type:'student', class:'9A'},
+    {username:'ogrenci1', password:'123', name:'Ahmet Yılmaz', type:'student', class:'9A'},
+    {username:'ogrenci2', password:'123', name:'Ayşe Kaya', type:'student', class:'9A'},
+    {username:'ogrenci1', password:'123', name:'Ahmet Yılmaz', type:'student', class:'9A'},
+    {username:'ogrenci2', password:'123', name:'Ayşe Kaya', type:'student', class:'9A'},
     {username:'ogrenci1', password:'123', name:'Ahmet Yılmaz', type:'student', class:'9A'},
     {username:'ogrenci2', password:'123', name:'Ayşe Kaya', type:'student', class:'9A'},
     {username:'ogretmen1', password:'123', name:'Mehmet Öğretmen', type:'teacher'},
-    {username:'ogretmen2', password:'123', name:'Zeynep Öğretmen', type:'teacher'}
   ];
   localStorage.setItem('arenaUsers', JSON.stringify(users));
 }
@@ -618,6 +626,165 @@ document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') document.getE
 /* Initial selectedDate */
 selectedDate = new Date();
 initializeDays();
+  // ---------- Admin UI logic (paste into existing script) ----------
+function isAdminUser() {
+  return currentUser && currentUser.username === 'admin';
+}
+
+function openAdminUsers(){
+  renderAdminUsers();
+  document.getElementById('admin-modal-users').style.display = 'flex';
+}
+function openAdminClasses(){
+  renderAdminClasses();
+  document.getElementById('admin-modal-classes').style.display = 'flex';
+}
+function closeAdminModal(targetId){
+  document.getElementById(targetId).style.display = 'none';
+}
+
+document.querySelectorAll('.close-modal-admin').forEach(b=>{
+  b.addEventListener('click', ()=> closeAdminModal(b.dataset.target));
+});
+
+// show admin button if admin logged
+function toggleAdminButton(){
+  const btn = document.getElementById('admin-open-btn');
+  if(isAdminUser()) btn.style.display = 'block';
+  else btn.style.display = 'none';
+}
+document.getElementById('admin-open-btn').addEventListener('click', ()=> {
+  // açılan panel: kullanıcı yönetimi (ince ayar)
+  const choice = confirm('Kullanıcılar için OK, Sınıflar için Cancel basın.');
+  if(choice) openAdminUsers(); else openAdminClasses();
+});
+
+// Users render/manage
+function renderAdminUsers(){
+  const el = document.getElementById('admin-users-list');
+  el.innerHTML = '';
+  users.forEach((u, idx) => {
+    const div = document.createElement('div');
+    div.style.display = 'flex'; div.style.justifyContent = 'space-between'; div.style.padding='6px 0'; div.style.borderBottom='1px solid #eee';
+    div.innerHTML = `<div><strong>${u.username}</strong> — ${u.name} (${u.type}${u.class?(' - '+u.class):''})</div>
+      <div>
+        <button data-idx="${idx}" class="admin-edit-user">Düzenle</button>
+        <button data-idx="${idx}" class="admin-delete-user" style="margin-left:6px">Sil</button>
+      </div>`;
+    el.appendChild(div);
+  });
+  // add handlers
+  document.querySelectorAll('.admin-delete-user').forEach(b=>{
+    b.addEventListener('click', ()=> {
+      const i = parseInt(b.dataset.idx,10);
+      if(confirm('Kullanıcı silinsin mi?')) {
+        users.splice(i,1);
+        saveToLocalStorage();
+        renderAdminUsers();
+        showNotification('Kullanıcı silindi');
+      }
+    });
+  });
+  document.querySelectorAll('.admin-edit-user').forEach(b=>{
+    b.addEventListener('click', ()=> {
+      const i = parseInt(b.dataset.idx,10);
+      const u = users[i];
+      const newName = prompt('Ad Soyad', u.name);
+      if(newName===null) return;
+      const newPass = prompt('Şifre (boş bırak değişmez)');
+      const newClass = prompt('Sınıf (öğrenci için)', u.class || '');
+      u.name = newName || u.name;
+      if(newPass) u.password = newPass;
+      if(u.type === 'student') u.class = newClass || u.class;
+      users[i] = u;
+      saveToLocalStorage();
+      renderAdminUsers();
+      showNotification('Kullanıcı güncellendi');
+    });
+  });
+}
+
+// add user
+document.getElementById('admin-add-user').addEventListener('click', ()=>{
+  const u = document.getElementById('admin-new-username').value.trim();
+  const p = document.getElementById('admin-new-pass').value;
+  const n = document.getElementById('admin-new-name').value.trim();
+  const t = document.getElementById('admin-new-type').value;
+  const c = document.getElementById('admin-new-class').value.trim();
+  if(!u || !p || !n){ alert('Kullanıcı adı, şifre ve isim gerekli'); return; }
+  if(users.find(x=> x.username === u)){ alert('Aynı kullanıcı adı var'); return; }
+  const newU = { username: u, password: p, name: n, type: t };
+  if(t === 'student' && c) newU.class = c;
+  users.push(newU);
+  saveToLocalStorage();
+  document.getElementById('admin-new-username').value=''; document.getElementById('admin-new-pass').value=''; document.getElementById('admin-new-name').value=''; document.getElementById('admin-new-class').value='';
+  renderAdminUsers();
+  showNotification('Kullanıcı eklendi');
+});
+
+// Classes render/manage
+function renderAdminClasses(){
+  const el = document.getElementById('admin-classes-list');
+  el.innerHTML = '';
+  classes.forEach((c, idx) => {
+    const div = document.createElement('div');
+    div.style.display='flex'; div.style.justifyContent='space-between'; div.style.padding='6px 0'; div.style.borderBottom='1px solid #eee';
+    div.innerHTML = `<div><strong>${c.id}</strong> — ${c.name}</div>
+      <div>
+        <button data-idx="${idx}" class="admin-delete-class">Sil</button>
+      </div>`;
+    el.appendChild(div);
+  });
+  document.querySelectorAll('.admin-delete-class').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const i = parseInt(b.dataset.idx,10);
+      if(confirm('Sınıfı silmek istediğinize emin misiniz? (ilgili öğrenciler etkilenir)')) {
+        classes.splice(i,1);
+        // sınıfı kullanan öğrencilere class alanını kaldır (opsiyonel)
+        users.forEach(u=> { if(u.class && u.class === classes[i]?.id) delete u.class; });
+        saveToLocalStorage();
+        renderAdminClasses();
+        showNotification('Sınıf silindi');
+      }
+    });
+  });
+}
+
+// add class
+document.getElementById('admin-add-class').addEventListener('click', ()=>{
+  const id = document.getElementById('admin-new-class-id').value.trim();
+  const name = document.getElementById('admin-new-class-name').value.trim();
+  if(!id || !name){ alert('id ve isim gerekli'); return; }
+  if(classes.find(c=> c.id === id)){ alert('Bu kodda sınıf mevcut'); return; }
+  classes.push({ id, name, teacher: currentUser ? currentUser.username : '' });
+  // add to selects
+  const sel = document.getElementById('teacher-class-select');
+  const opt = document.createElement('option'); opt.value=id; opt.textContent = name; sel.appendChild(opt);
+  const sel2 = document.getElementById('class');
+  const opt2 = document.createElement('option'); opt2.value = id; opt2.textContent = name; sel2.appendChild(opt2);
+  saveToLocalStorage(); renderAdminClasses(); showNotification('Sınıf eklendi');
+});
+
+// reset all homeworks
+document.getElementById('admin-reset-homeworks').addEventListener('click', ()=>{
+  if(!confirm('Tüm ödevler kalıcı olarak silinecek. Emin misiniz?')) return;
+  homeworks = [];
+  saveToLocalStorage();
+  initializeDays();
+  renderHomeworks(formatDate(selectedDate));
+  loadAssignedHomeworks();
+  showNotification('Tüm ödevler sıfırlandı');
+});
+
+// çağırılacak yönetici görünürlüğü güncelle
+function adminOnLogin(){
+  toggleAdminButton();
+}
+// çağır: showApp() fonksiyonun sonuna ekle veya showApp çağrıldığında adminOnLogin çalışsın:
+const _oldShowApp = showApp;
+showApp = function(){ _oldShowApp(); adminOnLogin(); };
+
+// ---------- end admin UI ----------
 
 </script>
 </body>
