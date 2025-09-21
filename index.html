@@ -321,30 +321,26 @@
         }
         
         .days-container {
-            display: flex;
-            overflow-x: auto;
-            gap: 12px;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
             margin-bottom: 20px;
-            padding: 12px 5px;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        
-        .days-container::-webkit-scrollbar {
-            display: none;
         }
         
         .day-card {
-            min-width: 115px;
             background: var(--card-bg);
             border-radius: var(--border-radius);
-            padding: 15px;
+            padding: 12px;
             box-shadow: var(--shadow);
             text-align: center;
             cursor: pointer;
             transition: var(--transition);
             position: relative;
             border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100px;
         }
         
         .day-card:hover {
@@ -365,23 +361,24 @@
         .day-name {
             font-weight: 600;
             margin-bottom: 5px;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
         }
         
         .date {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             opacity: 0.8;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         
         .homework-count {
             background-color: var(--secondary);
             color: white;
             border-radius: 20px;
-            padding: 3px 10px;
-            font-size: 0.85rem;
+            padding: 2px 8px;
+            font-size: 0.75rem;
             display: inline-block;
             font-weight: 500;
+            margin-top: auto;
         }
         
         .homeworks-container {
@@ -553,6 +550,71 @@
             align-items: center;
             gap: 8px;
             font-weight: 500;
+        }
+        
+        /* Profil Sayfası */
+        .profile-page {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-right: 20px;
+        }
+        
+        .profile-info {
+            flex: 1;
+        }
+        
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .profile-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .detail-card {
+            background: var(--background);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .detail-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .detail-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
         }
         
         .bottom-nav {
@@ -774,24 +836,23 @@
         .chemistry-bg { background: linear-gradient(135deg, #ffb703, #ffd166); color: white; }
         .biology-bg { background: linear-gradient(135deg, #20ad96, #0db39e); color: white; }
         
-        @media (max-width: 400px) {
-            .day-card {
-                min-width: 100px;
-                padding: 12px;
+        @media (max-width: 768px) {
+            .days-container {
+                grid-template-columns: repeat(4, 1fr);
             }
             
-            .homework-details {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 5px;
+            .profile-details {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .days-container {
+                grid-template-columns: repeat(2, 1fr);
             }
             
             .stats-container {
                 grid-template-columns: 1fr;
-            }
-            
-            .app-title h1 {
-                font-size: 1.5rem;
             }
         }
         
@@ -992,6 +1053,48 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Profil Sayfası -->
+            <div class="page" id="page-profile">
+                <div class="profile-page">
+                    <div class="profile-header">
+                        <div class="profile-avatar" id="profile-avatar">A</div>
+                        <div class="profile-info">
+                            <div class="profile-name" id="profile-name">Ahmet Yılmaz</div>
+                            <div class="user-type" id="profile-type">Öğrenci - 9-A Sınıfı</div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-details">
+                        <div class="detail-card">
+                            <div class="detail-value" id="profile-total-homework">0</div>
+                            <div class="detail-label">Toplam Ödev</div>
+                        </div>
+                        <div class="detail-card">
+                            <div class="detail-value" id="profile-completed-homework">0</div>
+                            <div class="detail-label">Tamamlanan</div>
+                        </div>
+                        <div class="detail-card">
+                            <div class="detail-value" id="profile-notes">0</div>
+                            <div class="detail-label">Eklenen Not</div>
+                        </div>
+                        <div class="detail-card">
+                            <div class="detail-value">%<span id="profile-success-rate">0</span></div>
+                            <div class="detail-label">Başarı Oranı</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="homeworks-container">
+                    <div class="homeworks-header">
+                        <h2>Son Ödevler</h2>
+                    </div>
+                    
+                    <div id="profile-homeworks">
+                        <!-- Recent homeworks will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
         </div>
         
         <button class="add-button" id="add-button">
@@ -1152,6 +1255,9 @@
             
             // Öğretmen paneli
             document.getElementById('assign-hw-btn').addEventListener('click', assignHomework);
+            document.getElementById('add-class-btn').addEventListener('click', function() {
+                alert('Sınıf ekleme özelliği yakında gelecek!');
+            });
             
             // Öğrenci not ekleme
             document.getElementById('add-note-btn').addEventListener('click', function() {
@@ -1182,7 +1288,7 @@
             const userClass = document.getElementById('class').value;
             
             if (!username || !password) {
-                alert('Lütfen kullanıcı adı ve şifre giriniz!');
+                alert('Lütfen kullanıcı adı và şifre giriniz!');
                 return;
             }
             
@@ -1272,6 +1378,13 @@
             
             // Mevcut sayfayı kaydet
             currentPage = pageId;
+            
+            // Sayfaya özel yüklemeler
+            if (pageId === 'page-profile') {
+                loadProfilePage();
+            } else if (pageId === 'page-teacher') {
+                loadAssignedHomeworks();
+            }
         }
         
         // Günleri oluştur
@@ -1456,6 +1569,107 @@
             });
         }
         
+        // Profil sayfasını yükle
+        function loadProfilePage() {
+            document.getElementById('profile-name').textContent = currentUser.name;
+            document.getElementById('profile-avatar').textContent = currentUser.name.charAt(0);
+            
+            if (currentUser.type === 'student') {
+                document.getElementById('profile-type').textContent = `Öğrenci - ${currentUser.class} Sınıfı`;
+            } else {
+                document.getElementById('profile-type').textContent = 'Öğretmen';
+            }
+            
+            // İstatistikleri güncelle
+            let total = 0;
+            let completed = 0;
+            let notesCount = 0;
+            
+            if (currentUser.type === 'student') {
+                total = homeworks.filter(hw => hw.assignedTo === currentUser.class).length;
+                completed = homeworks.filter(hw => hw.assignedTo === currentUser.class && hw.notes && hw.notes[currentUser.username]).length;
+                
+                // Öğrencinin eklediği not sayısını hesapla
+                homeworks.forEach(hw => {
+                    if (hw.notes && hw.notes[currentUser.username]) {
+                        notesCount++;
+                    }
+                });
+            } else {
+                total = homeworks.filter(hw => hw.assignedBy === currentUser.username).length;
+                completed = 0; // Öğretmenler için tamamlanma istatistiği farklı olabilir
+                
+                // Öğretmenin verdiği ödevlere eklenen not sayısını hesapla
+                homeworks.forEach(hw => {
+                    if (hw.assignedBy === currentUser.username && hw.notes) {
+                        notesCount += Object.keys(hw.notes).length;
+                    }
+                });
+            }
+            
+            const successRate = total > 0 ? Math.round((completed / total) * 100) : 0;
+            
+            document.getElementById('profile-total-homework').textContent = total;
+            document.getElementById('profile-completed-homework').textContent = completed;
+            document.getElementById('profile-notes').textContent = notesCount;
+            document.getElementById('profile-success-rate').textContent = successRate;
+            
+            // Son ödevleri göster
+            loadRecentHomeworks();
+        }
+        
+        // Son ödevleri yükle
+        function loadRecentHomeworks() {
+            const profileHomeworks = document.getElementById('profile-homeworks');
+            let userHomeworks = [];
+            
+            if (currentUser.type === 'student') {
+                userHomeworks = homeworks
+                    .filter(hw => hw.assignedTo === currentUser.class)
+                    .sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate))
+                    .slice(0, 5);
+            } else {
+                userHomeworks = homeworks
+                    .filter(hw => hw.assignedBy === currentUser.username)
+                    .sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate))
+                    .slice(0, 5);
+            }
+            
+            if (userHomeworks.length === 0) {
+                profileHomeworks.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <p>Henüz hiç ödev bulunmamaktadır</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            profileHomeworks.innerHTML = '';
+            userHomeworks.forEach(hw => {
+                const homeworkItem = document.createElement('div');
+                homeworkItem.className = 'homework-item';
+                
+                homeworkItem.innerHTML = `
+                    <div class="homework-info">
+                        <div class="homework-title">${hw.title}</div>
+                        <div class="homework-details">
+                            <span class="homework-subject ${subjects[hw.subject].class}">${subjects[hw.subject].name}</span>
+                            <span class="homework-time"><i class="far fa-calendar"></i> ${formatDate(parseDate(hw.dueDate), true)}</span>
+                            <span class="homework-time"><i class="far fa-clock"></i> ${hw.dueTime}</span>
+                        </div>
+                        ${currentUser.type === 'student' && hw.notes && hw.notes[currentUser.username] ? `
+                        <div class="homework-note">
+                            <strong>Notunuz:</strong> ${hw.notes[currentUser.username]}
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+                
+                profileHomeworks.appendChild(homeworkItem);
+            });
+        }
+        
         // Ödev ata (öğretmen)
         function assignHomework() {
             const title = document.getElementById('hw-title').value;
@@ -1554,7 +1768,6 @@
             
             if (currentUser.type === 'student') {
                 total = homeworks.filter(hw => hw.assignedTo === currentUser.class).length;
-                // Bu örnekte tamamlanan ödevleri basitçe notu olanlar olarak kabul ediyoruz
                 completed = homeworks.filter(hw => hw.assignedTo === currentUser.class && hw.notes && hw.notes[currentUser.username]).length;
             } else {
                 total = homeworks.filter(hw => hw.assignedBy === currentUser.username).length;
@@ -1578,7 +1791,7 @@
             const notification = document.createElement('div');
             notification.style.position = 'fixed';
             notification.style.bottom = '20px';
-            notification.style.left = '50%';
+            notification.style.left: '50%';
             notification.style.transform = 'translateX(-50%)';
             notification.style.backgroundColor = 'var(--primary)';
             notification.style.color = 'white';
